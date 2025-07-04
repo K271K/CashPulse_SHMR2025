@@ -1,5 +1,6 @@
 package com.core.network
 
+import com.core.network.models.CategoryNetwork
 import com.core.network.models.TransactionNetwork
 
 /**
@@ -12,5 +13,7 @@ interface RemoteDataSource {
         startDate: String?,
         endDate: String?
     ): List<TransactionNetwork>
+
+    suspend fun getCategories(): List<CategoryNetwork>
 
 }

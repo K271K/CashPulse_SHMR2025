@@ -65,4 +65,8 @@ internal class RetrofitNetwork @Inject constructor() : RemoteDataSource {
             startDate,
             endDate
         )
+
+    override suspend fun getCategories(): List<CategoryNetwork> {
+        return networkApi.getCategories()
+    }
 }

@@ -37,8 +37,8 @@ android {
 dependencies {
 
     implementation(project(":feature:expenses:domain"))
-    implementation(project(":core:network"))
 
+    implementation(project(":core:network"))
     implementation(project(":core:data"))
     implementation(project(":core:domain"))
 
