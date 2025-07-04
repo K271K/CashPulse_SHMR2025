@@ -1,7 +1,7 @@
 package com.feature.category.data.repository
 
-import com.core.data.models.toDataModel
-import com.core.data.models.toDomainModel
+import com.core.data.models.mappers.toDataModel
+import com.core.data.models.mappers.toDomainModel
 import com.core.domain.models.CategoryDomainModel
 import com.core.network.RemoteDataSource
 import com.feature.category.domain.repository.CategoryRepository

@@ -1,6 +1,6 @@
-package com.core.network.models
+package com.core.data.models
 
-data class AccountNetwork(
+data class AccountDataModel(
     val balance: String,
     val currency: String,
     val id: Int,

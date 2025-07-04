@@ -1,5 +1,6 @@
 package com.core.network
 
+import com.core.network.models.AccountNetwork
 import com.core.network.models.CategoryNetwork
 import com.core.network.models.TransactionNetwork
 import okhttp3.Interceptor
@@ -7,7 +8,9 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 import javax.inject.Inject
@@ -23,6 +26,15 @@ internal interface NetworkApi {
 
     @GET("categories")
     suspend fun getCategories(): List<CategoryNetwork>
+
+    @GET("accounts")
+    suspend fun getAccounts(): List<AccountNetwork>
+
+    @PUT("accounts/{id}")
+    suspend fun updateAccount(
+        @Path("id") id: Int,
+        @Body account: AccountNetwork
+    ): AccountNetwork
 }
 
 /**
@@ -68,5 +80,19 @@ internal class RetrofitNetwork @Inject constructor() : RemoteDataSource {
 
     override suspend fun getCategories(): List<CategoryNetwork> {
         return networkApi.getCategories()
+    }
+
+    override suspend fun getAccounts(): List<AccountNetwork> {
+        return networkApi.getAccounts()
+    }
+
+    override suspend fun updateAccount(
+        id: Int,
+        account: AccountNetwork
+    ): AccountNetwork {
+        return networkApi.updateAccount(
+            id = id,
+            account = account
+        )
     }
 }
