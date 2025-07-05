@@ -41,6 +41,11 @@ dependencies {
     implementation(project(":core:navigation"))
     implementation(project(":core:ui"))
 
+    implementation(project(":core:data"))
+    implementation(project(":core:domain"))
+    implementation(project(":feature:account:domain"))
+    implementation(project(":feature:account:data"))
+
     implementation(libs.androidx.fragment)
 
     implementation(libs.hilt.core)

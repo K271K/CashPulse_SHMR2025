@@ -1,7 +1,7 @@
 package com.feature.incomes.data.repository
 
-import com.core.data.models.toDataList
-import com.core.data.models.toDomainList
+import com.core.data.models.mappers.toDataList
+import com.core.data.models.mappers.toDomainList
 import com.core.domain.models.TransactionDomainModel
 import com.core.network.RemoteDataSource
 import com.feature.incomes.domain.repository.IncomesRepository

@@ -29,7 +29,7 @@ fun MyListItemOnlyText(
 
 @Preview(showBackground = true)
 @Composable
-fun MyListItemOnlyTextPreview() {
+private fun MyListItemOnlyTextPreview() {
     MyListItemOnlyText(
         modifier = Modifier
             .height(56.dp),
