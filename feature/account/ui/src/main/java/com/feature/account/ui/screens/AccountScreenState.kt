@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import com.core.domain.models.AccountDomainModel
 
 @Immutable
-interface AccountScreenState {
+sealed interface AccountScreenState {
     data object Loading: AccountScreenState
     data class Loaded(val data: AccountScreenData): AccountScreenState
     data class Error(val message: String): AccountScreenState

@@ -24,6 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.core.ui.components.MyErrorBox
 import com.core.ui.components.MyListItemWithLeadIcon
+import com.core.ui.components.MyLoadingIndicator
 import com.core.ui.components.MyTopAppBar
 import com.core.ui.theme.GreenLight
 
@@ -69,13 +70,7 @@ fun CategoryScreenContent(
         )
         when (uiState) {
             is CategoriesScreenState.Loading -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
+                MyLoadingIndicator()
             }
 
             is CategoriesScreenState.Error -> {

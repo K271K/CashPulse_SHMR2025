@@ -52,7 +52,7 @@ fun MyListItemWithLeadIcon (
 
 @Preview(showBackground = true)
 @Composable
-fun MyListItemWithLeadIconPreview() {
+private fun MyListItemWithLeadIconPreview() {
     MyListItemWithLeadIcon(
         modifier = Modifier
             .height(56.dp),

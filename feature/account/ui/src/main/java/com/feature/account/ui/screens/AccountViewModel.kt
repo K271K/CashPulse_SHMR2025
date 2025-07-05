@@ -1,11 +1,12 @@
 package com.feature.account.ui.screens
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.core.domain.models.AccountDomainModel
 import com.feature.account.domain.usecase.GetAccountUseCase
 import com.feature.account.domain.usecase.UpdateAccountUseCase
-import com.feature.account.ui.models.AccountUiMapper
+import com.feature.account.ui.models.AccountUiModel
+import com.feature.account.ui.models.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,56 +18,94 @@ class AccountViewModel @Inject constructor(
     private val updateAccountUseCase: UpdateAccountUseCase,
     private val getAccountUseCase: GetAccountUseCase
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<AccountScreenState>(AccountScreenState.Loading)
-    val uiState = _uiState.asStateFlow()
+    private val _accountScreenState = MutableStateFlow<AccountScreenState>(AccountScreenState.Loading)
+    val accountScreenState = _accountScreenState.asStateFlow()
 
     init {
-        // Автоматическая загрузка счёта при создании ViewModel
+        loadAccountData()
+    }
+
+    private fun loadAccountData() {
         viewModelScope.launch {
+            _accountScreenState.value = AccountScreenState.Loading
             try {
-                val account = getAccountUseCase.invoke() // Получаем первый счёт
-                _uiState.value = AccountScreenState.Loaded(
-                    data = AccountUiMapper.toUiModel(account)
+                val loadedAccount : AccountUiModel = getAccountUseCase().toUiModel()
+                Log.d("AccountViewModel","$loadedAccount")
+                _accountScreenState.value = AccountScreenState.Loaded(
+                    AccountScreenData(
+                        name = loadedAccount.name,
+                        currency = loadedAccount.currency,
+                        balance = loadedAccount.balance
+                    )
                 )
             } catch (e: Exception) {
-                _uiState.value = AccountScreenState.Error(
-                    message = "Ошибка загрузки счёта: ${e.message}"
+                _accountScreenState.value = AccountScreenState.Error(
+                    message = e.message ?: "Неизвестная ошибка"
                 )
             }
         }
     }
 
-    fun loadAccount(account: AccountDomainModel) {
-        _uiState.value = AccountScreenState.Loaded(
-            data = AccountUiMapper.toUiModel(account)
-        )
-    }
-
-    fun updateAccount(name: String, currency: String) {
+    fun updateAccountName(newName: String) {
         viewModelScope.launch {
             try {
-                _uiState.value = AccountScreenState.Loading
-                val currentState = (_uiState.value as? AccountScreenState.Loaded)?.data
-                    ?: AccountScreenData("", "RUB", "0.0")
-                val updatedAccount = currentState.toDomainAccount()
-                    .copy(name = name, currency = currency)
-                val result = updateAccountUseCase(updatedAccount)
-                _uiState.value = AccountScreenState.Loaded(
-                    data = AccountUiMapper.toUiModel(result)
-                )
+                val currentState = _accountScreenState.value as? AccountScreenState.Loaded
+                if (currentState != null) {
+                    val updatedDomainModel = currentState.data.copy(name = newName).toDomainAccount()
+                    updateAccountUseCase(updatedDomainModel)
+
+                    // Обновляем UI состояние
+                    _accountScreenState.value = AccountScreenState.Loaded(
+                        currentState.data.copy(name = newName)
+                    )
+                }
             } catch (e: Exception) {
-                _uiState.value = AccountScreenState.Error(
-                    message = "Ошибка обновления: ${e.message}"
+                _accountScreenState.value = AccountScreenState.Error(
+                    message = e.message ?: "Неизвестная ошибка"
                 )
             }
         }
     }
 
-    fun clearError() {
-        if (_uiState.value is AccountScreenState.Error) {
-            val currentData = (_uiState.value as? AccountScreenState.Loaded)?.data
-                ?: AccountScreenData("", "RUB", "0.0")
-            _uiState.value = AccountScreenState.Loaded(data = currentData)
+    fun updateAccountCurrency(newCurrency: String) {
+        viewModelScope.launch {
+            try {
+                val currentState = _accountScreenState.value as? AccountScreenState.Loaded
+                if (currentState != null) {
+                    val updatedDomainModel = currentState.data.copy(currency = newCurrency).toDomainAccount()
+                    updateAccountUseCase(updatedDomainModel)
+
+                    // Обновляем UI состояние
+                    _accountScreenState.value = AccountScreenState.Loaded(
+                        currentState.data.copy(currency = newCurrency)
+                    )
+                }
+            } catch (e: Exception) {
+                _accountScreenState.value = AccountScreenState.Error(
+                    message = e.message ?: "Неизвестная ошибка"
+                )
+            }
+        }
+    }
+
+    fun updateAccountBalance(newBalance: String) {
+        viewModelScope.launch {
+            try {
+                val currentState = _accountScreenState.value as? AccountScreenState.Loaded
+                if (currentState != null) {
+                    val updatedDomainModel = currentState.data.copy(balance = newBalance).toDomainAccount()
+                    updateAccountUseCase(updatedDomainModel)
+
+                    // Обновляем UI состояние
+                    _accountScreenState.value = AccountScreenState.Loaded(
+                        currentState.data.copy(balance = newBalance)
+                    )
+                }
+            } catch (e: Exception) {
+                _accountScreenState.value = AccountScreenState.Error(
+                    message = e.message ?: "Неизвестная ошибка"
+                )
+            }
         }
     }
 }
