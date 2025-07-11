@@ -4,10 +4,7 @@ import com.feature.category.domain.repository.CategoryRepository
 import com.feature.category.domain.usecases.GetCategoriesUseCase
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
 
-@InstallIn(ViewModelComponent::class)
 @Module
 object CategoryDomainModule {
 

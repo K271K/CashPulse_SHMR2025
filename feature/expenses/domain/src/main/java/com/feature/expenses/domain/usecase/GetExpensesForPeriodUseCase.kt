@@ -9,7 +9,8 @@ import com.feature.expenses.domain.repository.ExpensesRepository
 class GetExpensesForPeriodUseCase (
     private val expensesRepository: ExpensesRepository
 ) {
-    suspend operator fun invoke(startDate: String?, endDate: String?): Result<List<TransactionDomainModel>> {
-        return expensesRepository.getExpensesForPeriod(startDate, endDate)
+    suspend operator fun invoke(startDate: String?, endDate: String?, accountId: Int): Result<List<TransactionDomainModel>> {
+        return expensesRepository.getExpensesForPeriod(startDate, endDate, accountId)
     }
+
 }

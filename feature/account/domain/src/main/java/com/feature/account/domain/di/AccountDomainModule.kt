@@ -5,10 +5,7 @@ import com.feature.account.domain.usecase.GetAccountUseCase
 import com.feature.account.domain.usecase.UpdateAccountUseCase
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
 
-@InstallIn(ViewModelComponent::class)
 @Module
 object AccountDomainModule {
 

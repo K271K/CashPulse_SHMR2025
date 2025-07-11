@@ -1,16 +1,19 @@
 package com.feature.expenses.ui.screens.expenses_today
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.feature.expenses.domain.usecase.GetTodayExpensesUseCase
 import com.feature.expenses.ui.models.ExpensesUiModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Provider
 
-@HiltViewModel
+/**
+ * Тут лежит сама ViewModel
+ */
 class ExpensesTodayViewModel @Inject constructor(
     private val getTodayExpensesUseCase: GetTodayExpensesUseCase
 ) : ViewModel() {
@@ -26,7 +29,7 @@ class ExpensesTodayViewModel @Inject constructor(
     fun fetchTodayExpenses(date: String?) {
         viewModelScope.launch {
             _expensesTodayScreenState.value = ExpensesTodayScreenState.Loading
-            getTodayExpensesUseCase.invoke(date = date)
+            getTodayExpensesUseCase.invoke()
                 .onSuccess { listOfExpenses ->
                     val total = listOfExpenses.sumOf { it.amount.toDoubleOrNull() ?: 0.0 }.toString()
                     _expensesTodayScreenState.value = ExpensesTodayScreenState.Loaded(
@@ -50,5 +53,19 @@ class ExpensesTodayViewModel @Inject constructor(
                     )
                 }
         }
+    }
+}
+
+/**
+ * Тут лежит фабрика для ViewModel. Мне кажется так проще в коде ориентироваться,
+ * не вижу смысла отдельную папку сувать viewModels и в отдельную папку сувать фабрики для них
+ */
+class ExpensesTodayViewModelFactory @Inject constructor(
+    private val viewModelProvider: Provider<ExpensesTodayViewModel>
+): ViewModelProvider.Factory {
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return viewModelProvider.get() as T
     }
 }

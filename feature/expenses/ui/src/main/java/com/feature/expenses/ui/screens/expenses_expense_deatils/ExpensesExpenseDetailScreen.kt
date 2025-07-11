@@ -1,4 +1,4 @@
-package com.feature.expenses.ui.screens
+package com.feature.expenses.ui.screens.expenses_expense_deatils
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize

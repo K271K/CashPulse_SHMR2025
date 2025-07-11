@@ -4,12 +4,12 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.hilt)
+    alias(libs.plugins.graph)
 }
 
 android {
     namespace = "com.example.cashpulse"
-    compileSdk = 36
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.cashpulse"
@@ -51,16 +51,32 @@ android {
 
 dependencies {
 
-    implementation(project(":core:navigation"))
-    implementation(project(":core:ui"))
-    implementation(project(":feature:expenses:ui"))
-    implementation(project(":feature:incomes:ui"))
-    implementation(project(":feature:account:ui"))
-    implementation(project(":feature:category:ui"))
-    implementation(project(":feature:settings:ui"))
+    implementation(projects.core.navigation)
+    implementation(projects.core.network)
+    implementation(projects.core.data)
+    implementation(projects.core.domain)
+    implementation(projects.core.ui)
 
-    implementation(libs.hilt.core)
-    kapt(libs.hilt.compiler)
+    implementation(projects.feature.account.ui)
+    implementation(projects.feature.account.data)
+    implementation(projects.feature.account.domain)
+
+    implementation(projects.feature.category.ui)
+    implementation(projects.feature.category.data)
+    implementation(projects.feature.category.domain)
+
+    implementation(projects.feature.expenses.ui)
+    implementation(projects.feature.expenses.data)
+    implementation(projects.feature.expenses.domain)
+
+    implementation(projects.feature.incomes.ui)
+    implementation(projects.feature.incomes.data)
+    implementation(projects.feature.incomes.domain)
+
+    implementation(projects.feature.settings.ui)
+
+    implementation(libs.dagger.dagger)
+    kapt(libs.dagger.compiler)
 
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)

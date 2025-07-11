@@ -2,12 +2,11 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
-    alias(libs.plugins.hilt)
 }
 
 android {
     namespace = "com.feature.account.data"
-    compileSdk = 36
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 26
@@ -36,13 +35,12 @@ android {
 
 dependencies {
 
-    implementation(project(":feature:account:domain"))
-    implementation(project(":core:domain"))
-    implementation(project(":core:data"))
-    implementation(project(":core:network"))
+    implementation(projects.feature.account.domain)
+    implementation(projects.core.domain)
+    api(projects.core.data)
 
-    implementation(libs.hilt.core)
-    kapt(libs.hilt.compiler)
+    implementation(libs.dagger.dagger)
+    kapt(libs.dagger.compiler)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

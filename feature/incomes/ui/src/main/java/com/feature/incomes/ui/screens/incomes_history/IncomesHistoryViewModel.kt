@@ -1,11 +1,11 @@
 package com.feature.incomes.ui.screens.incomes_history
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.feature.incomes.domain.usecase.GetIncomesForPeriodUseCase
 import com.feature.incomes.ui.models.IncomesHistoryUiModel
 import com.feature.incomes.ui.models.formatIncomeDate
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -15,8 +15,11 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 import javax.inject.Inject
+import javax.inject.Provider
 
-@HiltViewModel
+/**
+ * Тут лежит сама ViewModel
+ */
 class IncomesHistoryViewModel @Inject constructor(
     private val getIncomesForPeriodUseCase: GetIncomesForPeriodUseCase
 ) : ViewModel(){
@@ -86,7 +89,8 @@ class IncomesHistoryViewModel @Inject constructor(
             _incomesHistoryScreenState.value = IncomesHistoryScreenState.Loading
             getIncomesForPeriodUseCase.invoke(
                 startDate = startDate,
-                endDate = endDate
+                endDate = endDate,
+                accountId = 211
             )
                 .onSuccess { listOfIncomes ->
                     val totalAmount = listOfIncomes.sumOf { it.amount.toDoubleOrNull() ?: 0.0 }.toString()
@@ -114,5 +118,19 @@ class IncomesHistoryViewModel @Inject constructor(
                     )
                 }
         }
+    }
+}
+
+/**
+ * Тут лежит фабрика для ViewModel. Мне кажется так проще в коде ориентироваться,
+ * не вижу смысла отдельную папку сувать viewModels и в отдельную папку сувать фабрики для них
+ */
+class IncomesHistoryViewModelFactory @Inject constructor(
+    private val viewModelProvider: Provider<IncomesHistoryViewModel>
+): ViewModelProvider.Factory {
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return viewModelProvider.get() as T
     }
 }

@@ -13,9 +13,9 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.core.navigation.SubGraphDest
-import com.core.ui.theme.GreenLight
-import com.core.ui.theme.GreenPrimary
 import com.example.cashpulse.navigation.bottomNavItems
+import com.example.cashpulse.ui.theme.GreenLight
+import com.example.cashpulse.ui.theme.GreenPrimary
 
 @Composable
 fun MyBottomAppBar(

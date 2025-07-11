@@ -10,12 +10,12 @@ import javax.inject.Inject
 class IncomesRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource
 ): IncomesRepository {
-    override suspend fun getTodayIncomes(date: String?): Result<List<TransactionDomainModel>> {
+    override suspend fun getTodayIncomes(date: String?, accountId: Int): Result<List<TransactionDomainModel>> {
         try {
             val result = remoteDataSource.getAccountTransactionsForPeriod(
-                accountId = 211,
-                startDate = null,
-                endDate = null
+                accountId = accountId,
+                startDate = date,
+                endDate = date
             )
             val dataResult = toDataList(result)
             val domainResult = toDomainList(dataResult).filter {
@@ -29,11 +29,12 @@ class IncomesRepositoryImpl @Inject constructor(
 
     override suspend fun getIncomesForPeriod(
         startDate: String?,
-        endDate: String?
+        endDate: String?,
+        accountId: Int
     ): Result<List<TransactionDomainModel>> {
         try {
             val result = remoteDataSource.getAccountTransactionsForPeriod(
-                accountId = 211,
+                accountId = accountId,
                 startDate = startDate,
                 endDate = endDate
             )

@@ -3,13 +3,12 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.kapt)
-    alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.serialization)
 }
 
 android {
     namespace = "com.feature.settings.ui"
-    compileSdk = 36
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 26
@@ -38,13 +37,12 @@ android {
 
 dependencies {
 
-    implementation(project(":core:navigation"))
-    implementation(project(":core:ui"))
+    implementation(projects.core.navigation)
+    implementation(projects.core.ui)
 
-    implementation(libs.androidx.fragment)
 
-    implementation(libs.hilt.core)
-    kapt(libs.hilt.compiler)
+    implementation(libs.dagger.dagger)
+    kapt(libs.dagger.compiler)
 
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)

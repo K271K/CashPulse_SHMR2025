@@ -11,11 +11,17 @@ import javax.inject.Inject
 class AccountRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource
 ): AccountRepository {
-    override suspend fun getAccount(): AccountDomainModel {
+    override suspend fun getAccount(id: Int): AccountDomainModel {
         val accounts = remoteDataSource.getAccounts()
-        return if (accounts.isNotEmpty()){
-            accounts[0].toDataModel().toDomainModel()
-        } else{
+        val account = accounts.find { it.id == id }
+        return account?.toDataModel()?.toDomainModel() ?: throw IllegalStateException("No account found")
+    }
+
+    override suspend fun getAccounts(): List<AccountDomainModel> {
+        val accounts = remoteDataSource.getAccounts()
+        return if (accounts.isNotEmpty()) {
+            accounts.map { it.toDataModel().toDomainModel() }
+        } else {
             throw IllegalStateException("No accounts found")
         }
     }

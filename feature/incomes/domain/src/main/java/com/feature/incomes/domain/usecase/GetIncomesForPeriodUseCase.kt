@@ -9,11 +9,13 @@ class GetIncomesForPeriodUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         startDate: String?,
-        endDate: String?
+        endDate: String?,
+        accountId: Int
     ): Result<List<TransactionDomainModel>> {
         return incomesRepository.getIncomesForPeriod(
             startDate = startDate,
-            endDate = endDate
+            endDate = endDate,
+            accountId = accountId
         )
     }
 }

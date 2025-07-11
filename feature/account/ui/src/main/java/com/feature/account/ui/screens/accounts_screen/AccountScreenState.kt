@@ -1,4 +1,4 @@
-package com.feature.account.ui.screens
+package com.feature.account.ui.screens.accounts_screen
 
 import androidx.compose.runtime.Immutable
 import com.core.domain.models.AccountDomainModel
@@ -11,12 +11,14 @@ sealed interface AccountScreenState {
 }
 
 @Immutable
-data class AccountScreenData(
+data class AccountScreenItem(
+    val id: Int,
     val name: String,
     val currency: String,
-    val balance: String
+    val balance: String,
+    val isSelected: Boolean
 ) {
-    fun toDomainAccount(id: Int = 211, userId: Int? = 12, createdAt: String? = null, updatedAt: String? = null): AccountDomainModel =
+    fun toDomainAccount(id: Int, userId: Int? = 12, createdAt: String? = null, updatedAt: String? = null): AccountDomainModel =
         AccountDomainModel(
             balance = balance,
             currency = currency,
@@ -28,3 +30,7 @@ data class AccountScreenData(
         )
 }
 
+@Immutable
+data class AccountScreenData(
+    val accounts: List<AccountScreenItem>
+)

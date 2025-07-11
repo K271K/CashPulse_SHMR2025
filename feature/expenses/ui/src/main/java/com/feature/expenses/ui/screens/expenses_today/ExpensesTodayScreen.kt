@@ -18,8 +18,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.core.ui.R
 import com.core.ui.components.MyErrorBox
 import com.core.ui.components.MyListItemOnlyText
@@ -29,11 +29,12 @@ import com.core.ui.theme.GreenLight
 
 @Composable
 fun ExpensesTodayScreen(
-    viewModel: ExpensesTodayViewModel = hiltViewModel(),
+    viewModelFactory: ExpensesTodayViewModelFactory,
     onGoToHistoryClick: () -> Unit,
     onGoToExpenseDetailScreen: (Int) -> Unit
 ) {
-    val uiState: ExpensesTodayScreenState by viewModel.expensesTodayScreenState.collectAsStateWithLifecycle()
+    val viewModel: ExpensesTodayViewModel = viewModel(factory = viewModelFactory)
+    val uiState by viewModel.expensesTodayScreenState.collectAsStateWithLifecycle()
     ExpensesTodayScreenContent(
         uiState = uiState,
         onGoToHistoryClick = onGoToHistoryClick,

@@ -5,10 +5,7 @@ import com.core.domain.usecase.GetCurrencyUseCase
 import com.core.domain.usecase.SetCurrencyUseCase
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
 
-@InstallIn(ViewModelComponent::class)
 @Module
 object CoreDomainModule {
 

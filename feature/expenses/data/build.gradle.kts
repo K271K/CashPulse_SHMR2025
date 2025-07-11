@@ -2,12 +2,11 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
-    alias(libs.plugins.hilt)
 }
 
 android {
     namespace = "com.feature.expenses.data"
-    compileSdk = 36
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 26
@@ -36,14 +35,13 @@ android {
 
 dependencies {
 
-    implementation(project(":feature:expenses:domain"))
+    implementation(projects.feature.expenses.domain)
 
-    implementation(project(":core:network"))
-    implementation(project(":core:data"))
-    implementation(project(":core:domain"))
+    implementation(projects.core.data)
+    implementation(projects.core.domain)
 
-    implementation(libs.hilt.core)
-    kapt(libs.hilt.compiler)
+    implementation(libs.dagger.dagger)
+    kapt(libs.dagger.compiler)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

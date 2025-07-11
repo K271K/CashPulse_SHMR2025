@@ -1,11 +1,12 @@
 package com.feature.expenses.ui.screens.expenses_history
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.feature.expenses.domain.usecase.GetExpensesForPeriodUseCase
 import com.feature.expenses.ui.models.ExpensesHistoryUiModel
 import com.feature.expenses.ui.models.formatExpenseDate
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.feature.expenses.ui.screens.expenses_today.ExpensesTodayViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -15,8 +16,11 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 import javax.inject.Inject
+import javax.inject.Provider
 
-@HiltViewModel
+/**
+ * Тут лежит сама ViewModel
+ */
 class ExpensesHistoryViewModel @Inject constructor(
     private val getExpensesForPeriodUseCase: GetExpensesForPeriodUseCase
 ) : ViewModel() {
@@ -85,7 +89,7 @@ class ExpensesHistoryViewModel @Inject constructor(
     private fun fetchExpensesForPeriod(startDate: String, endDate: String) {
         viewModelScope.launch {
             _expensesHistoryScreenState.value = ExpensesHistoryScreenState.Loading
-            getExpensesForPeriodUseCase.invoke(startDate, endDate)
+            getExpensesForPeriodUseCase.invoke(startDate, endDate, accountId = 211)
                 .onSuccess { listOfExpenses->
                     val total = listOfExpenses.sumOf { it.amount.toDoubleOrNull() ?: 0.0 }.toString()
                     _expensesHistoryScreenState.value = ExpensesHistoryScreenState.Loaded(
@@ -111,5 +115,19 @@ class ExpensesHistoryViewModel @Inject constructor(
                     )
                 }
         }
+    }
+}
+
+/**
+ * Тут лежит фабрика для ViewModel. Мне кажется так проще в коде ориентироваться,
+ * не вижу смысла отдельную папку сувать viewModels и в отдельную папку сувать фабрики для них
+ */
+class ExpensesHistoryViewModelFactory @Inject constructor(
+    private val viewModelProvider: Provider<ExpensesHistoryViewModel>
+): ViewModelProvider.Factory {
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return viewModelProvider.get() as T
     }
 }

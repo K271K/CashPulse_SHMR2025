@@ -7,10 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import com.example.cashpulse.navigation.DefaultNavigator
 import com.example.cashpulse.navigation.MainNavigation
 import com.example.cashpulse.ui.theme.CashPulseTheme
-import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     /**
      * DefaultNavigator используется для организации навигации между модулями
@@ -22,6 +20,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        (applicationContext as BaseApplication).appComponent.inject(this)
         enableEdgeToEdge()
         setContent {
             CashPulseTheme {

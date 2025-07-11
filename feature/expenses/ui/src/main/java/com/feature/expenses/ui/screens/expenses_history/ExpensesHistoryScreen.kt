@@ -23,8 +23,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.core.ui.R
 import com.core.ui.components.DatePickerDialogComponent
 import com.core.ui.components.MyDatePickerRow
@@ -33,22 +33,28 @@ import com.core.ui.components.MyListItemOnlyText
 import com.core.ui.components.MyListItemWithLeadIcon
 import com.core.ui.components.MyTopAppBar
 import com.core.ui.theme.GreenLight
+import com.feature.expenses.ui.screens.expenses_today.ExpensesTodayViewModelFactory
 
 private const val CURRENCY_SYMBOL = " R"
 
 @Composable
 fun ExpensesHistoryScreen(
-    viewModel: ExpensesHistoryViewModel = hiltViewModel(),
+    viewModelFactory: ExpensesHistoryViewModelFactory,
     onGoBackClick: () -> Unit,
     onGoToAnalyticsClick: () -> Unit
 ) {
-    val uiState: ExpensesHistoryScreenState by viewModel.historyScreenState.collectAsStateWithLifecycle()
+    val viewModel: ExpensesHistoryViewModel = viewModel(factory = viewModelFactory)
+    val uiState by viewModel.historyScreenState.collectAsStateWithLifecycle()
 
     ExpensesHistoryScreenContent(
         uiState = uiState,
         onGoToAnalyticsClick = onGoToAnalyticsClick,
-        onChooseStartDate = { viewModel.updateStartDate(it) },
-        onChooseEndDate = { viewModel.updateEndDate(it) },
+        onChooseStartDate = {
+            viewModel.updateStartDate(it)
+        },
+        onChooseEndDate = {
+            viewModel.updateEndDate(it)
+        },
         onGoBackClick = onGoBackClick,
     )
 }

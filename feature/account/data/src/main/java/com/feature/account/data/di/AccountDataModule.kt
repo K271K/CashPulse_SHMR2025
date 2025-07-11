@@ -3,20 +3,16 @@ package com.feature.account.data.di
 import com.core.network.RemoteDataSource
 import com.feature.account.data.repository.AccountRepositoryImpl
 import com.feature.account.domain.repository.AccountRepository
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
-@InstallIn(SingletonComponent::class)
 @Module
-object AccountDataModule {
+interface AccountDataModule {
 
-    @Provides
-    fun provideAccountRepository(
-        remoteDataSource: RemoteDataSource
-    ): AccountRepository = AccountRepositoryImpl(
-        remoteDataSource = remoteDataSource
-    )
+    @Binds
+    @Singleton
+    fun bindAccountRepository(impl: AccountRepositoryImpl): AccountRepository
 
 }

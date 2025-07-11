@@ -5,10 +5,8 @@ import com.feature.expenses.domain.usecase.GetExpensesForPeriodUseCase
 import com.feature.expenses.domain.usecase.GetTodayExpensesUseCase
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
 
-@InstallIn(ViewModelComponent::class)
+
 @Module
 object ExpensesDomainModule {
 

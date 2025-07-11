@@ -55,6 +55,9 @@ sealed class Dest() {
     data object AccountMain: Dest()
 
     @Serializable
+    data class AccountEdit(val id: Int): Dest()
+
+    @Serializable
     data object Category: Dest()
 
     @Serializable

@@ -13,10 +13,10 @@ import javax.inject.Inject
 class ExpensesRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource
 ) : ExpensesRepository {
-    override suspend fun getTodayExpenses(date: String?): Result<List<TransactionDomainModel>> {
+    override suspend fun getTodayExpenses(date: String?, accountId: Int): Result<List<TransactionDomainModel>> {
         try {
             val result = remoteDataSource.getAccountTransactionsForPeriod(
-                accountId = 211,
+                accountId = accountId,
                 startDate = date,
                 endDate = date
             )
@@ -33,11 +33,12 @@ class ExpensesRepositoryImpl @Inject constructor(
 
     override suspend fun getExpensesForPeriod(
         startDate: String?,
-        endDate: String?
+        endDate: String?,
+        accountId: Int
     ): Result<List<TransactionDomainModel>> {
         try {
             val result = remoteDataSource.getAccountTransactionsForPeriod(
-                accountId = 211,
+                accountId = accountId,
                 startDate = startDate,
                 endDate = endDate
             )

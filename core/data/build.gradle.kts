@@ -2,12 +2,11 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
-    alias(libs.plugins.hilt)
 }
 
 android {
     namespace = "com.core.data"
-    compileSdk = 36
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 26
@@ -36,12 +35,12 @@ android {
 
 dependencies {
 
-    implementation(project(":core:domain"))
-    implementation(project(":core:network"))
+    implementation(projects.core.domain)
+    api(projects.core.network)
 
     implementation(libs.androidx.datastore.preferences)
-    implementation(libs.hilt.core)
-    kapt(libs.hilt.compiler)
+    implementation(libs.dagger.dagger)
+    kapt(libs.dagger.compiler)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

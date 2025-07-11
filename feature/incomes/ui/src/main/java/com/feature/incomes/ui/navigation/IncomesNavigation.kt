@@ -8,7 +8,10 @@ import com.core.navigation.Dest
 import com.core.navigation.Feature
 import com.core.navigation.SubGraphDest
 import com.feature.incomes.ui.screens.incomes_history.IncomesHistoryScreen
+import com.feature.incomes.ui.screens.incomes_history.IncomesHistoryViewModelFactory
 import com.feature.incomes.ui.screens.incomes_today.IncomesTodayScreen
+import com.feature.incomes.ui.screens.incomes_today.IncomesTodayViewModelFactory
+import javax.inject.Inject
 
 /**
  * Наследуемся от интерфейса Feature из :core:navigation
@@ -19,7 +22,10 @@ interface IncomesNavigation : Feature
 /**
  * internal имплементация интерфейса фичи, которая непосредственно задаёт граф навигации для фичи
  */
-internal class IncomesNavigationImpl : IncomesNavigation {
+internal class IncomesNavigationImpl @Inject constructor(
+    private val incomesTodayViewModelFactory: IncomesTodayViewModelFactory,
+    private val incomesHistoryViewModelFactory: IncomesHistoryViewModelFactory
+) : IncomesNavigation {
     override fun registerGraph(
         navHostController: NavHostController,
         navGraphBuilder: NavGraphBuilder
@@ -29,6 +35,7 @@ internal class IncomesNavigationImpl : IncomesNavigation {
         ) {
             composable<Dest.IncomesToday> {
                 IncomesTodayScreen(
+                    viewModelFactory = incomesTodayViewModelFactory,
                     onGoToHistoryClick = {
                         navHostController.navigate(Dest.IncomesHistory)
                     },
@@ -39,6 +46,7 @@ internal class IncomesNavigationImpl : IncomesNavigation {
             }
             composable<Dest.IncomesHistory> {
                 IncomesHistoryScreen(
+                    viewModelFactory = incomesHistoryViewModelFactory,
                     onGoBackClick = {
                         navHostController.popBackStack()
                     },

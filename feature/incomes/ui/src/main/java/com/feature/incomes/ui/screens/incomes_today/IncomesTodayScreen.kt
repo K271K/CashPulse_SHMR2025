@@ -17,8 +17,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.core.ui.R
 import com.core.ui.components.MyErrorBox
 import com.core.ui.components.MyListItemOnlyText
@@ -27,11 +27,12 @@ import com.core.ui.theme.GreenLight
 
 @Composable
 fun IncomesTodayScreen(
-    viewModel: IncomesTodayViewModel = hiltViewModel(),
+    viewModelFactory: IncomesTodayViewModelFactory,
     onGoToHistoryClick: () -> Unit,
     onGoToIncomeDetailScreen: (Int)-> Unit
 ) {
-    val uiState: IncomesTodayScreenState by viewModel.incomesTodayScreenState.collectAsStateWithLifecycle()
+    val viewModel: IncomesTodayViewModel = viewModel(factory = viewModelFactory)
+    val uiState by viewModel.incomesTodayScreenState.collectAsStateWithLifecycle()
     IncomesTodayScreenContent(
         uiState = uiState,
         onGoToHistoryClick = onGoToHistoryClick,

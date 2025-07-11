@@ -8,9 +8,12 @@ import androidx.navigation.toRoute
 import com.core.navigation.Dest
 import com.core.navigation.Feature
 import com.core.navigation.SubGraphDest
-import com.feature.expenses.ui.screens.ExpensesExpenseDetailScreen
+import com.feature.expenses.ui.screens.expenses_expense_deatils.ExpensesExpenseDetailScreen
 import com.feature.expenses.ui.screens.expenses_history.ExpensesHistoryScreen
+import com.feature.expenses.ui.screens.expenses_history.ExpensesHistoryViewModelFactory
 import com.feature.expenses.ui.screens.expenses_today.ExpensesTodayScreen
+import com.feature.expenses.ui.screens.expenses_today.ExpensesTodayViewModelFactory
+import javax.inject.Inject
 
 /**
  * Наследуемся от интерфейса Feature из :core:navigation
@@ -24,9 +27,12 @@ interface ExpensesNavigation : Feature
  * Конкретно у фичи Expenses я сделал три экрана:
  * Расходы сегодня
  * История расходов
- * Детализация конкретного расхода (на будущее)
+ * Детализация конкретного расхода
  */
-internal class ExpensesNavigationImpl : ExpensesNavigation {
+internal class ExpensesNavigationImpl @Inject constructor(
+    private val expensesTodayViewModelFactory: ExpensesTodayViewModelFactory,
+    private val expensesHistoryViewModelFactory: ExpensesHistoryViewModelFactory
+) : ExpensesNavigation {
     override fun registerGraph(
         navHostController: NavHostController,
         navGraphBuilder: NavGraphBuilder
@@ -36,6 +42,7 @@ internal class ExpensesNavigationImpl : ExpensesNavigation {
         ) {
             composable<Dest.ExpensesToday> {
                 ExpensesTodayScreen(
+                    viewModelFactory = expensesTodayViewModelFactory,
                     onGoToHistoryClick = {
                         navHostController.navigate(Dest.ExpensesHistory)
                     },
@@ -46,6 +53,7 @@ internal class ExpensesNavigationImpl : ExpensesNavigation {
             }
             composable<Dest.ExpensesHistory> {
                 ExpensesHistoryScreen(
+                    viewModelFactory = expensesHistoryViewModelFactory,
                     onGoBackClick = {
                         navHostController.popBackStack()
                     },

@@ -11,14 +11,14 @@ composeBom = "2024.09.00"
 appcompatVersion = "1.7.1"
 materialVersion = "1.12.0"
 navVersion="2.9.0"
-hiltVersion = "2.56.2"
+daggerVersion = "2.56.2"
 serializationVersion = "1.6.0"
-hiltNavigationVersion = "1.2.0"
 retrofit = "3.0.0"
 okhttp = "4.12.0"
 secretsVersion = "2.0.1"
 jetbrainsKotlinJvm = "2.0.21"
 dataStoreVersion="1.1.7"
+graphVersion = "2.9.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -41,9 +41,9 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 material = { group = "com.google.android.material", name = "material", version.ref = "materialVersion" }
 
 # hilt
-hilt-core = { module="com.google.dagger:hilt-android", version.ref = "hiltVersion" }
-hilt-compiler = { module="com.google.dagger:hilt-android-compiler", version.ref = "hiltVersion" }
-androidx-fragment = {module="androidx.hilt:hilt-navigation-compose", version.ref="hiltNavigationVersion"}
+dagger-dagger = { module="com.google.dagger:dagger", version.ref = "daggerVersion" }
+dagger-compiler = { module="com.google.dagger:dagger-compiler", version.ref = "daggerVersion" }
+#androidx-fragment = {module="androidx.hilt:hilt-navigation-compose", version.ref="hiltNavigationVersion"}
 
 # серилизация
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serializationVersion" }
@@ -67,10 +67,12 @@ kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref="kotlin"}
 # сериализация
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 # hilt
-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltVersion" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "daggerVersion" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 # секреты
 secrets-gradle={id="com.google.android.libraries.mapsplatform.secrets-gradle-plugin",version.ref="secretsVersion"}
+# граф зависимостей между модулями (с лекции по CI/CD)
+graph = {id="com.jraska.module.graph.assertion", version.ref="graphVersion"}
 
 [bundles]
 # bundle для всех зависимостей связанных с network

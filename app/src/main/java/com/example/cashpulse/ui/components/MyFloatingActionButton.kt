@@ -16,8 +16,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.core.navigation.Dest
 import com.core.navigation.SubGraphDest
-import com.core.ui.theme.GreenLight
-import com.core.ui.theme.GreenPrimary
+import com.example.cashpulse.ui.theme.GreenPrimary
 
 @Composable
 fun MyFloatingActionButton(navController: NavHostController) {

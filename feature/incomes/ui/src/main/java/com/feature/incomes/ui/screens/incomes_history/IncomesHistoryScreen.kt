@@ -23,8 +23,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.core.ui.R
 import com.core.ui.components.DatePickerDialogComponent
 import com.core.ui.components.MyDatePickerRow
@@ -33,19 +33,21 @@ import com.core.ui.components.MyListItemOnlyText
 import com.core.ui.components.MyListItemWithLeadIcon
 import com.core.ui.components.MyTopAppBar
 import com.core.ui.theme.GreenLight
+import com.feature.incomes.ui.screens.incomes_today.IncomesTodayViewModel
 
 @Composable
 fun IncomesHistoryScreen(
-    viewModel: IncomesHistoryViewModel = hiltViewModel(),
+    viewModelFactory: IncomesHistoryViewModelFactory,
     onGoBackClick: () -> Unit,
     onGoToAnalyticsClick: () -> Unit
 ) {
-    val uiState: IncomesHistoryScreenState by viewModel.incomesHistoryScreenState.collectAsStateWithLifecycle()
+    val viewModel: IncomesHistoryViewModel = viewModel(factory = viewModelFactory)
+    val uiState by viewModel.incomesHistoryScreenState.collectAsStateWithLifecycle()
 
     IncomesHistoryScreenContent(
         uiState = uiState,
-        onChooseStartDate = viewModel::updateStartDate,
-        onChooseEndDate = viewModel::updateEndDate,
+        onChooseStartDate = {},
+        onChooseEndDate = {},
         onGoBackClick = onGoBackClick,
         onGoToAnalyticsClick = onGoToAnalyticsClick
     )

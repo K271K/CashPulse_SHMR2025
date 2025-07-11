@@ -42,7 +42,7 @@ internal interface NetworkApi {
  * про имплементацию этого интерфейса они ничего не знают, так как он internal
  */
 @Singleton
-internal class RetrofitNetwork @Inject constructor() : RemoteDataSource {
+class RetrofitNetwork @Inject constructor() : RemoteDataSource {
 
     private val logging = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
