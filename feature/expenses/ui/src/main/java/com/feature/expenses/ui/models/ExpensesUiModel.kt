@@ -5,5 +5,6 @@ data class ExpensesUiModel(
     val icon: String,
     val category: String,
     val comment: String,
-    val amount: String
+    val amount: String,
+    val currency: String
 )

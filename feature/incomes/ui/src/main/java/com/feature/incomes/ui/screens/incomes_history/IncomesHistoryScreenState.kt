@@ -19,5 +19,5 @@ data class HistoryScreenData(
     val startDate: String,
     val endDate: String,
     val totalAmount: String,
-    val listOfIncomes: List<IncomesHistoryUiModel>
+    val incomes: List<IncomesHistoryUiModel>,
 )

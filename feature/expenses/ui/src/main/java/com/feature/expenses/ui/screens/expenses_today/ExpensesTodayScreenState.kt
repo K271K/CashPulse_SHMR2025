@@ -25,5 +25,6 @@ interface ExpensesTodayScreenState {
 @Immutable
 data class ExpensesScreenData(
     val expenses: List<ExpensesUiModel>,
-    val totalAmount: String
+    val totalAmount: String,
+    val currency: String
 )

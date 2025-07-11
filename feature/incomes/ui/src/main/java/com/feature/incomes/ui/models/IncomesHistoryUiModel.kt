@@ -14,6 +14,7 @@ data class IncomesHistoryUiModel(
     val description: String? = null,
     val amount: String,
     val time: String,
+    val currency: String
 )
 
 fun String.formatIncomeDate() : String {

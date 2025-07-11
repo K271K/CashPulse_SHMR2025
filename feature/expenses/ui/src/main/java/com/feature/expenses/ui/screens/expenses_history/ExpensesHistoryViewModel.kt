@@ -18,11 +18,15 @@ import java.util.TimeZone
 import javax.inject.Inject
 import javax.inject.Provider
 
+import com.core.domain.usecase.GetCurrencyUseCase
+import com.core.domain.models.TransactionDomainModel
+
 /**
  * Тут лежит сама ViewModel
  */
 class ExpensesHistoryViewModel @Inject constructor(
-    private val getExpensesForPeriodUseCase: GetExpensesForPeriodUseCase
+    private val getExpensesForPeriodUseCase: GetExpensesForPeriodUseCase,
+    private val getCurrencyUseCase: GetCurrencyUseCase
 ) : ViewModel() {
 
     private val _expensesHistoryScreenState: MutableStateFlow<ExpensesHistoryScreenState> =
@@ -89,32 +93,45 @@ class ExpensesHistoryViewModel @Inject constructor(
     private fun fetchExpensesForPeriod(startDate: String, endDate: String) {
         viewModelScope.launch {
             _expensesHistoryScreenState.value = ExpensesHistoryScreenState.Loading
-            getExpensesForPeriodUseCase.invoke(startDate, endDate, accountId = 211)
-                .onSuccess { listOfExpenses->
-                    val total = listOfExpenses.sumOf { it.amount.toDoubleOrNull() ?: 0.0 }.toString()
-                    _expensesHistoryScreenState.value = ExpensesHistoryScreenState.Loaded(
-                        data = HistoryScreenData(
-                            expenses = listOfExpenses.map {
-                                ExpensesHistoryUiModel(
-                                    emojiData = it.category.emoji,
-                                    name = it.category.name,
-                                    description = it.comment,
-                                    amount = it.amount,
-                                    time = it.transactionDate.formatExpenseDate()
-                                )
-                            },
-                            totalAmount = "$total R",
-                            startDate = startDate,
-                            endDate = endDate
-                        )
-                    )
-                }
-                .onFailure { error ->
-                    _expensesHistoryScreenState.value = ExpensesHistoryScreenState.Error(
-                        message = error.message ?: "Unknown error"
-                    )
-                }
+            try {
+                val currency = getCurrencyUseCase().getOrThrow()
+                val listOfExpenses =
+                    getExpensesForPeriodUseCase.invoke(startDate, endDate, accountId = 211)
+                        .getOrThrow()
+                _expensesHistoryScreenState.value = ExpensesHistoryScreenState.Loaded(
+                    data = toHistoryScreenData(listOfExpenses, startDate, endDate, currency)
+                )
+            } catch (e: Exception) {
+                _expensesHistoryScreenState.value = ExpensesHistoryScreenState.Error(
+                    message = e.message ?: "Unknown error"
+                )
+            }
         }
+    }
+
+    private fun toHistoryScreenData(
+        listOfExpenses: List<TransactionDomainModel>,
+        startDate: String,
+        endDate: String,
+        currency: String
+    ): HistoryScreenData {
+        val total = listOfExpenses.sumOf { it.amount.toDoubleOrNull() ?: 0.0 }.toString()
+        return HistoryScreenData(
+            expenses = listOfExpenses.map {
+                ExpensesHistoryUiModel(
+                    emojiData = it.category.emoji,
+                    name = it.category.name,
+                    description = it.comment,
+                    amount = it.amount,
+                    time = it.transactionDate.formatExpenseDate(),
+                    currency = currency,
+                    id = it.id
+                )
+            },
+            totalAmount = "$total $currency",
+            startDate = startDate,
+            endDate = endDate
+        )
     }
 }
 

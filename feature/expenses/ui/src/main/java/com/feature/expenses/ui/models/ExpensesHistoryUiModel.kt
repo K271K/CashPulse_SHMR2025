@@ -8,11 +8,13 @@ import java.util.TimeZone
 
 @Immutable
 data class ExpensesHistoryUiModel(
+    val id: Int,
     val emojiData: String? = null,
     val name: String,
     val description: String? = null,
     val amount: String,
     val time: String,
+    val currency: String
 )
 
 fun String.formatExpenseDate() : String {

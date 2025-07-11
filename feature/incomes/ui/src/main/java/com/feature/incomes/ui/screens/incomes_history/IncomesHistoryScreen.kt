@@ -33,7 +33,6 @@ import com.core.ui.components.MyListItemOnlyText
 import com.core.ui.components.MyListItemWithLeadIcon
 import com.core.ui.components.MyTopAppBar
 import com.core.ui.theme.GreenLight
-import com.feature.incomes.ui.screens.incomes_today.IncomesTodayViewModel
 
 @Composable
 fun IncomesHistoryScreen(
@@ -46,8 +45,12 @@ fun IncomesHistoryScreen(
 
     IncomesHistoryScreenContent(
         uiState = uiState,
-        onChooseStartDate = {},
-        onChooseEndDate = {},
+        onChooseStartDate = {
+            viewModel.updateStartDate(it)
+        },
+        onChooseEndDate = {
+            viewModel.updateEndDate(it)
+        },
         onGoBackClick = onGoBackClick,
         onGoToAnalyticsClick = onGoToAnalyticsClick
     )
@@ -120,7 +123,7 @@ fun IncomesHistoryScreenContent(
                     },
                 )
 
-                if (uiState.data.listOfIncomes.isEmpty()) {
+                if (uiState.data.incomes.isEmpty()) {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
@@ -137,7 +140,7 @@ fun IncomesHistoryScreenContent(
                             .padding(bottom = 16.dp)
                     ) {
                         items(
-                            uiState.data.listOfIncomes,
+                            uiState.data.incomes,
                             key = { it.id }) {
                             MyListItemWithLeadIcon(
                                 modifier = Modifier
@@ -161,7 +164,7 @@ fun IncomesHistoryScreenContent(
                                     Column(
                                         horizontalAlignment = Alignment.End
                                     ) {
-                                        Text(text = it.amount + " R")
+                                        Text(text = "${it.amount} ${it.currency}")
                                         Text(text = it.time)
                                     }
                                 },

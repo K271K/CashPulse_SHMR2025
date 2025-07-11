@@ -7,13 +7,11 @@ import javax.inject.Inject
 class GetCurrencyUseCase @Inject constructor(
     private val repository: CurrencyRepository
 ) {
-    operator fun invoke(): Flow<String> = repository.currency
-}
-
-class SetCurrencyUseCase @Inject constructor(
-    private val repository: CurrencyRepository
-) {
-    suspend operator fun invoke(currency: String) {
-        repository.setCurrency(currency)
+    suspend operator fun invoke(): Result<String> {
+        return try {
+            Result.success(repository.getCurrency())
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }

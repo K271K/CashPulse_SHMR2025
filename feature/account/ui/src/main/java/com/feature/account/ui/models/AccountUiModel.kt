@@ -8,11 +8,3 @@ data class AccountUiModel(
     val currency: String,
     val balance: String
 )
-
-fun AccountDomainModel.toUiModel() =
-    AccountUiModel(
-        id = this.id,
-        name = this.name,
-        currency = this.currency,
-        balance = this.balance
-    )

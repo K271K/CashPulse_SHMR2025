@@ -83,7 +83,7 @@ fun IncomesTodayScreenContent(
                         Text(text = "Всего")
                     },
                     trailContent = {
-                        Text(text = uiState.data.totalAmount + " R")
+                        Text(text = "${uiState.data.totalAmount} ${uiState.data.currency}")
                     }
                 )
                 HorizontalDivider()
@@ -103,7 +103,7 @@ fun IncomesTodayScreenContent(
                                 Text(text = income.categoryName)
                             },
                             trailContent = {
-                                Text(text = income.amount + " R")
+                                Text(text = "${income.amount} ${income.currency}")
                             },
                             onClick = null
                         )

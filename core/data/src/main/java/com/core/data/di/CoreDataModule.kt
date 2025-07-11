@@ -2,6 +2,7 @@ package com.core.data.di
 
 import com.core.data.repository.CurrencyRepositoryImpl
 import com.core.domain.repository.CurrencyRepository
+import com.core.network.RemoteDataSource
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -20,8 +21,10 @@ object CoreDataModule {
 
     @Provides
     @Singleton
-    fun provideCurrencyRepository(): CurrencyRepository {
-        return CurrencyRepositoryImpl()
+    fun provideCurrencyRepository(remoteDataSource: RemoteDataSource): CurrencyRepository {
+        return CurrencyRepositoryImpl(
+            remoteDataSource = remoteDataSource
+        )
     }
 
 }

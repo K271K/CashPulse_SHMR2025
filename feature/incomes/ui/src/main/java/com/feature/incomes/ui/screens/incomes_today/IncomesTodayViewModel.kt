@@ -3,6 +3,7 @@ package com.feature.incomes.ui.screens.incomes_today
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.core.domain.usecase.GetCurrencyUseCase
 import com.feature.incomes.domain.usecase.GetTodayIncomesUseCase
 import com.feature.incomes.ui.models.IncomesUiModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +16,8 @@ import javax.inject.Provider
  * Тут лежит сама ViewModel
  */
 class IncomesTodayViewModel @Inject constructor(
-    private val getTodayIncomesUseCase: GetTodayIncomesUseCase
+    private val getTodayIncomesUseCase: GetTodayIncomesUseCase,
+    private val getCurrencyUseCase: GetCurrencyUseCase
 ) : ViewModel() {
 
     private var _incomesTodayScreenState: MutableStateFlow<IncomesTodayScreenState> =
@@ -31,31 +33,32 @@ class IncomesTodayViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             _incomesTodayScreenState.value = IncomesTodayScreenState.Loading
-            getTodayIncomesUseCase()
-                .onSuccess { listOfIncomes ->
-                    val totalAmount = listOfIncomes.sumOf { income ->
-                        income.amount.toDoubleOrNull() ?: 0.0
-                    }.toString()
-                    _incomesTodayScreenState.value = IncomesTodayScreenState.Loaded(
-                        data = IncomesTodayScreenData(
-                            incomes = listOfIncomes.map { domainIncomeModel ->
-                                IncomesUiModel(
-                                    id = domainIncomeModel.id,
-                                    categoryName = domainIncomeModel.category.name,
-                                    amount = domainIncomeModel.amount
-                                )
-                            },
-                            totalAmount = "$totalAmount R"
-                        )
+            try {
+                val currency = getCurrencyUseCase().getOrThrow()
+                val listOfIncomes = getTodayIncomesUseCase().getOrThrow()
+                val totalAmount = listOfIncomes.sumOf { income ->
+                    income.amount.toDoubleOrNull() ?: 0.0
+                }.toString()
+                _incomesTodayScreenState.value = IncomesTodayScreenState.Loaded(
+                    data = IncomesTodayScreenData(
+                        incomes = listOfIncomes.map { domainIncomeModel ->
+                            IncomesUiModel(
+                                id = domainIncomeModel.id,
+                                categoryName = domainIncomeModel.category.name,
+                                amount = domainIncomeModel.amount,
+                                currency = currency
+                            )
+                        },
+                        totalAmount = totalAmount,
+                        currency = currency
                     )
-                }
-                .onFailure { error->
-                    _incomesTodayScreenState.value = IncomesTodayScreenState.Error(
-                        message = error.message ?: "Unknown error"
-                    )
-                }
+                )
+            } catch (e: Exception) {
+                _incomesTodayScreenState.value = IncomesTodayScreenState.Error(
+                    message = e.message ?: "Unknown error"
+                )
+            }
         }
-
     }
 }
 

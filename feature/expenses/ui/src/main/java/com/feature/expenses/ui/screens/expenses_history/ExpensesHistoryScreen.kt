@@ -33,9 +33,6 @@ import com.core.ui.components.MyListItemOnlyText
 import com.core.ui.components.MyListItemWithLeadIcon
 import com.core.ui.components.MyTopAppBar
 import com.core.ui.theme.GreenLight
-import com.feature.expenses.ui.screens.expenses_today.ExpensesTodayViewModelFactory
-
-private const val CURRENCY_SYMBOL = " R"
 
 @Composable
 fun ExpensesHistoryScreen(
@@ -175,7 +172,7 @@ fun ExpensesHistoryScreenContent(
                                     Column(
                                         horizontalAlignment = Alignment.End
                                     ) {
-                                        Text(text = it.amount + CURRENCY_SYMBOL)
+                                        Text(text = "${it.amount} ${it.currency}")
                                         Text(text = it.time)
                                     }
                                 },

@@ -2,7 +2,6 @@ package com.core.domain.di
 
 import com.core.domain.repository.CurrencyRepository
 import com.core.domain.usecase.GetCurrencyUseCase
-import com.core.domain.usecase.SetCurrencyUseCase
 import dagger.Module
 import dagger.Provides
 
@@ -12,11 +11,6 @@ object CoreDomainModule {
     @Provides
     fun provideGetCurrencyUseCase(repository: CurrencyRepository): GetCurrencyUseCase {
         return GetCurrencyUseCase(repository)
-    }
-
-    @Provides
-    fun provideSetCurrencyUseCase(repository: CurrencyRepository): SetCurrencyUseCase {
-        return SetCurrencyUseCase(repository)
     }
 
 }

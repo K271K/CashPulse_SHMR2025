@@ -97,7 +97,7 @@ fun ExpensesTodayScreenContent(
                         Text(text = "Всего")
                     },
                     trailContent = {
-                        Text(text = uiState.data.totalAmount + " R")
+                        Text(text = "${uiState.data.totalAmount} ${uiState.data.currency}")
                     }
                 )
                 HorizontalDivider()
@@ -126,7 +126,7 @@ fun ExpensesTodayScreenContent(
                                 }
                             },
                             trailContent = {
-                                Text(text = it.amount + " R")
+                                Text(text = "${it.amount} ${it.currency}")
                             },
                             onClick = {
                                 onGoToExpenseDetailScreen.invoke(it.id)
