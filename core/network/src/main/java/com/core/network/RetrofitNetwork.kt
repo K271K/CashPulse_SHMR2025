@@ -3,6 +3,7 @@ package com.core.network
 import com.core.network.models.AccountNetwork
 import com.core.network.models.CategoryNetwork
 import com.core.network.models.CreateTransactionRequestModel
+import com.core.network.models.CreateTransactionResponseModel
 import com.core.network.models.TransactionNetwork
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -38,10 +39,10 @@ internal interface NetworkApi {
         @Body account: AccountNetwork
     ): AccountNetwork
 
-    @POST
+    @POST("transactions")
     suspend fun createTransaction(
         @Body transaction: CreateTransactionRequestModel
-    ) : TransactionNetwork
+    ) : CreateTransactionResponseModel
 }
 
 /**
@@ -103,7 +104,7 @@ class RetrofitNetwork @Inject constructor() : RemoteDataSource {
         )
     }
 
-    override suspend fun createTransaction(transaction: CreateTransactionRequestModel): TransactionNetwork {
+    override suspend fun createTransaction(transaction: CreateTransactionRequestModel): CreateTransactionResponseModel {
         return networkApi.createTransaction(transaction)
     }
 }

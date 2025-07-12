@@ -9,6 +9,7 @@ import com.core.navigation.Dest
 import com.core.navigation.Feature
 import com.core.navigation.SubGraphDest
 import com.feature.expenses.ui.screens.expenses_add.AddExpenseScreen
+import com.feature.expenses.ui.screens.expenses_add.AddExpenseViewModelFactory
 import com.feature.expenses.ui.screens.expenses_expense_deatils.ExpensesExpenseDetailScreen
 import com.feature.expenses.ui.screens.expenses_history.ExpensesHistoryScreen
 import com.feature.expenses.ui.screens.expenses_history.ExpensesHistoryViewModelFactory
@@ -32,7 +33,8 @@ interface ExpensesNavigation : Feature
  */
 internal class ExpensesNavigationImpl @Inject constructor(
     private val expensesTodayViewModelFactory: ExpensesTodayViewModelFactory,
-    private val expensesHistoryViewModelFactory: ExpensesHistoryViewModelFactory
+    private val expensesHistoryViewModelFactory: ExpensesHistoryViewModelFactory,
+    private val addExpenseViewModelFactory: AddExpenseViewModelFactory
 ) : ExpensesNavigation {
     override fun registerGraph(
         navHostController: NavHostController,
@@ -77,6 +79,7 @@ internal class ExpensesNavigationImpl @Inject constructor(
             }
             composable<Dest.ExpensesAdd> {
                 AddExpenseScreen(
+                    viewModelFactory = addExpenseViewModelFactory,
                     onCancelClick = {
                         navHostController.popBackStack()
                     },

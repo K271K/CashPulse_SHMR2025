@@ -10,16 +10,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.core.ui.R
 import com.core.ui.components.MyListItemOnlyText
 import com.core.ui.components.MyTopAppBar
 
 @Composable
 fun AddExpenseScreen(
+    viewModelFactory: AddExpenseViewModelFactory,
     onCancelClick: () -> Unit,
     onSaveClick: () -> Unit
 ) {
-
+    val viewModel: AddExpenseViewModel = viewModel(factory = viewModelFactory)
     AddExpenseScreenContent(
         onCancelClick = onCancelClick,
         onSaveClick = onSaveClick

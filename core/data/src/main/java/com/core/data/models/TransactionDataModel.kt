@@ -18,4 +18,3 @@ data class TransactionDataModel(
     val transactionDate: String,
     val updatedAt: String
 )
-

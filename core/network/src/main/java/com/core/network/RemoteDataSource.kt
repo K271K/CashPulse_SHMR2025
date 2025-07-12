@@ -3,6 +3,7 @@ package com.core.network
 import com.core.network.models.AccountNetwork
 import com.core.network.models.CategoryNetwork
 import com.core.network.models.CreateTransactionRequestModel
+import com.core.network.models.CreateTransactionResponseModel
 import com.core.network.models.TransactionNetwork
 
 /**
@@ -27,6 +28,6 @@ interface RemoteDataSource {
 
     suspend fun createTransaction(
         transaction: CreateTransactionRequestModel
-    ) : TransactionNetwork
+    ) : CreateTransactionResponseModel
 
 }

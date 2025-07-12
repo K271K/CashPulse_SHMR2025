@@ -5,3 +5,4 @@ object CoreDomainConstants {
     const val ACCOUNT_ID = 211
 
 }
+
