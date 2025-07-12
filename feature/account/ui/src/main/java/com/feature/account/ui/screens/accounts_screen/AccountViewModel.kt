@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.core.domain.constants.CoreDomainConstants.ACCOUNT_ID
 import com.feature.account.domain.usecase.GetAccountUseCase
 import com.feature.account.domain.usecase.GetAccountsUseCase
 import com.feature.account.domain.usecase.UpdateAccountUseCase
@@ -35,7 +36,7 @@ class AccountsViewModel @Inject constructor(
                             name = it.name,
                             currency = it.currency,
                             balance = it.balance,
-                            isSelected = it.id == 211
+                            isSelected = it.id == ACCOUNT_ID
                         )
                     }
                     _accountScreenState.value = AccountScreenState.Loaded(

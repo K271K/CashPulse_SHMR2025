@@ -30,8 +30,8 @@ fun MyFloatingActionButton(navController: NavHostController) {
         FloatingActionButton(
             onClick = {
                 when (currentRoute) {
-                    SubGraphDest.Expenses::class.qualifiedName -> {
-
+                    Dest.ExpensesToday::class.qualifiedName -> {
+                        navController.navigate(Dest.ExpensesAdd)
                     }
 
                     SubGraphDest.Incomes::class.qualifiedName -> {

@@ -3,6 +3,7 @@ package com.feature.expenses.ui.screens.expenses_history
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.core.domain.constants.CoreDomainConstants.ACCOUNT_ID
 import com.feature.expenses.domain.usecase.GetExpensesForPeriodUseCase
 import com.feature.expenses.ui.models.ExpensesHistoryUiModel
 import com.feature.expenses.ui.models.formatExpenseDate
@@ -96,7 +97,7 @@ class ExpensesHistoryViewModel @Inject constructor(
             try {
                 val currency = getCurrencyUseCase().getOrThrow()
                 val listOfExpenses =
-                    getExpensesForPeriodUseCase.invoke(startDate, endDate, accountId = 211)
+                    getExpensesForPeriodUseCase.invoke(startDate, endDate, accountId = ACCOUNT_ID)
                         .getOrThrow()
                 _expensesHistoryScreenState.value = ExpensesHistoryScreenState.Loaded(
                     data = toHistoryScreenData(listOfExpenses, startDate, endDate, currency)

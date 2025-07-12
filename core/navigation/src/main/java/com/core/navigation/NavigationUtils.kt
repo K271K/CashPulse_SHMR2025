@@ -43,6 +43,9 @@ sealed class Dest() {
     data class ExpensesExpenseDetails(val id: Int): Dest()
 
     @Serializable
+    data object ExpensesAdd: Dest()
+
+    @Serializable
     data object IncomesToday: Dest()
 
     @Serializable

@@ -3,6 +3,7 @@ package com.feature.incomes.ui.screens.incomes_history
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.core.domain.constants.CoreDomainConstants.ACCOUNT_ID
 import com.core.domain.models.TransactionDomainModel
 import com.core.domain.usecase.GetCurrencyUseCase
 import com.feature.incomes.domain.usecase.GetIncomesForPeriodUseCase
@@ -93,7 +94,7 @@ class IncomesHistoryViewModel @Inject constructor(
             try {
                 val currency = getCurrencyUseCase().getOrThrow()
                 val listOfExpenses =
-                    getIncomesForPeriodUseCase.invoke(startDate, endDate, accountId = 211)
+                    getIncomesForPeriodUseCase.invoke(startDate, endDate, accountId = ACCOUNT_ID)
                         .getOrThrow()
                 _incomesHistoryScreenState.value = IncomesHistoryScreenState.Loaded(
                     data = toHistoryScreenData(listOfExpenses, startDate, endDate, currency)
