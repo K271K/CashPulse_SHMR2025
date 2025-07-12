@@ -2,6 +2,7 @@ package com.core.network
 
 import com.core.network.models.AccountNetwork
 import com.core.network.models.CategoryNetwork
+import com.core.network.models.CreateTransactionRequestModel
 import com.core.network.models.TransactionNetwork
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -10,6 +11,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -35,6 +37,11 @@ internal interface NetworkApi {
         @Path("id") id: Int,
         @Body account: AccountNetwork
     ): AccountNetwork
+
+    @POST
+    suspend fun createTransaction(
+        @Body transaction: CreateTransactionRequestModel
+    ) : TransactionNetwork
 }
 
 /**
@@ -94,5 +101,9 @@ class RetrofitNetwork @Inject constructor() : RemoteDataSource {
             id = id,
             account = account
         )
+    }
+
+    override suspend fun createTransaction(transaction: CreateTransactionRequestModel): TransactionNetwork {
+        return networkApi.createTransaction(transaction)
     }
 }

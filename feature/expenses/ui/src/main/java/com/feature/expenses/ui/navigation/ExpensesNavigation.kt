@@ -8,6 +8,7 @@ import androidx.navigation.toRoute
 import com.core.navigation.Dest
 import com.core.navigation.Feature
 import com.core.navigation.SubGraphDest
+import com.feature.expenses.ui.screens.expenses_add.AddExpenseScreen
 import com.feature.expenses.ui.screens.expenses_expense_deatils.ExpensesExpenseDetailScreen
 import com.feature.expenses.ui.screens.expenses_history.ExpensesHistoryScreen
 import com.feature.expenses.ui.screens.expenses_history.ExpensesHistoryViewModelFactory
@@ -71,6 +72,16 @@ internal class ExpensesNavigationImpl @Inject constructor(
                     },
                     onDoneClick = {
 
+                    }
+                )
+            }
+            composable<Dest.ExpensesAdd> {
+                AddExpenseScreen(
+                    onCancelClick = {
+                        navHostController.popBackStack()
+                    },
+                    onSaveClick = {
+                        navHostController.popBackStack()
                     }
                 )
             }

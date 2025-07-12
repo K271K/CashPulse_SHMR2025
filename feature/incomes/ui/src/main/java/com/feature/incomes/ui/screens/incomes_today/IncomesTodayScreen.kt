@@ -11,11 +11,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -104,6 +106,10 @@ fun IncomesTodayScreenContent(
                             },
                             trailContent = {
                                 Text(text = "${income.amount} ${income.currency}")
+                                Icon(
+                                    painter = painterResource(R.drawable.more_right),
+                                    contentDescription = null,
+                                )
                             },
                             onClick = null
                         )
