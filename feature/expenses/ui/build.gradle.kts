@@ -38,12 +38,9 @@ android {
 dependencies {
 
     api(projects.feature.expenses.data)
-    implementation(projects.feature.expenses.domain)
-
+    api(projects.feature.expenses.domain)
     implementation(projects.core.navigation)
     implementation(projects.core.ui)
-    implementation(projects.core.data)
-    implementation(projects.core.domain)
 
     implementation(libs.dagger.dagger)
     kapt(libs.dagger.compiler)

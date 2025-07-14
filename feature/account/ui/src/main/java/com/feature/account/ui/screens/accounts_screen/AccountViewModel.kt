@@ -1,13 +1,10 @@
 package com.feature.account.ui.screens.accounts_screen
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.core.domain.constants.CoreDomainConstants.ACCOUNT_ID
-import com.feature.account.domain.usecase.GetAccountUseCase
 import com.feature.account.domain.usecase.GetAccountsUseCase
-import com.feature.account.domain.usecase.UpdateAccountUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch

@@ -1,11 +1,8 @@
 package com.core.data.repository
 
-import androidx.datastore.preferences.core.stringPreferencesKey
 import com.core.domain.constants.CoreDomainConstants.ACCOUNT_ID
 import com.core.domain.repository.CurrencyRepository
 import com.core.network.RemoteDataSource
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 
 class CurrencyRepositoryImpl (
     private val remoteDataSource: RemoteDataSource,

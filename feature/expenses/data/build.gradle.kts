@@ -36,9 +36,7 @@ android {
 dependencies {
 
     implementation(projects.feature.expenses.domain)
-
-    implementation(projects.core.data)
-    implementation(projects.core.domain)
+    api(projects.core.data)
 
     implementation(libs.dagger.dagger)
     kapt(libs.dagger.compiler)

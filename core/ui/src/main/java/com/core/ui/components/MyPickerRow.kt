@@ -9,25 +9,26 @@ import androidx.compose.ui.unit.dp
 import com.core.ui.theme.GreenLight
 
 /**
- * Строка при нажатии на которую вызывается окошко выбора даты
+ * Строка при нажатии на которую вызывается окошко выбора
  */
 @Composable
-fun MyDatePickerRow (
+fun MyPickerRow (
+    modifier: Modifier = Modifier
+        .height(56.dp)
+        .background(GreenLight),
     trailingText: String,
     leadingText: String,
     onClick: () -> Unit,
 ) {
     MyListItemOnlyText(
-        modifier = Modifier
-            .height(56.dp)
-            .background(GreenLight),
+        modifier = modifier,
         content = {
             Text(
-                text = trailingText
+                text = leadingText
             )
         },
         trailContent = {
-            Text(text = leadingText)
+            Text(text = trailingText)
         },
         onClick = {
             onClick.invoke()

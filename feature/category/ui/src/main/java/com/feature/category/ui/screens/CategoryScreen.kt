@@ -1,4 +1,4 @@
-package com.feature.category.ui.screens
+ package com.feature.category.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,8 +14,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.core.ui.components.MyErrorBox
 import com.core.ui.components.MyListItemWithLeadIcon
 import com.core.ui.components.MyLoadingIndicator
@@ -24,9 +27,10 @@ import com.core.ui.theme.GreenLight
 
 @Composable
 fun CategoryScreen(
-    //viewModel: CategoryViewModel = hiltViewModel()
+    viewModelFactory: CategoryViewModelFactory
 ) {
-    val uiState = CategoriesScreenState.Loading
+    val viewModel: CategoryViewModel = viewModel(factory = viewModelFactory)
+    val uiState by viewModel.categoriesScreenState.collectAsStateWithLifecycle()
     val searchQuery = ""
     CategoryScreenContent(
         uiState = uiState,

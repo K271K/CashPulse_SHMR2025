@@ -30,4 +30,8 @@ interface RemoteDataSource {
         transaction: CreateTransactionRequestModel
     ) : CreateTransactionResponseModel
 
+    suspend fun getTransactionById(
+        transactionId:Int
+    ) : TransactionNetwork
+
 }

@@ -43,6 +43,11 @@ internal interface NetworkApi {
     suspend fun createTransaction(
         @Body transaction: CreateTransactionRequestModel
     ) : CreateTransactionResponseModel
+
+    @GET("transactions/{id}")
+    suspend fun getTransactionById(
+        @Path("id") transactionId: Int
+    ): TransactionNetwork
 }
 
 /**
@@ -106,5 +111,9 @@ class RetrofitNetwork @Inject constructor() : RemoteDataSource {
 
     override suspend fun createTransaction(transaction: CreateTransactionRequestModel): CreateTransactionResponseModel {
         return networkApi.createTransaction(transaction)
+    }
+
+    override suspend fun getTransactionById(transactionId: Int): TransactionNetwork {
+        return networkApi.getTransactionById(transactionId)
     }
 }

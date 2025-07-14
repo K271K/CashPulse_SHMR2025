@@ -1,7 +1,9 @@
 package com.core.data.di
 
+import com.core.data.repository.CategoryRepositoryImpl
 import com.core.data.repository.CurrencyRepositoryImpl
 import com.core.data.repository.TransactionRepositoryImpl
+import com.core.domain.repository.CategoryRepository
 import com.core.domain.repository.CurrencyRepository
 import com.core.domain.repository.TransactionRepository
 import com.core.network.RemoteDataSource
@@ -35,6 +37,13 @@ object CoreDataModule {
         return TransactionRepositoryImpl(
             remoteDataSource = remoteDataSource
         )
+    }
+
+    @Provides
+    fun provideCategoryRepository(
+        remoteDataSource: RemoteDataSource
+    ): CategoryRepository {
+        return CategoryRepositoryImpl(remoteDataSource = remoteDataSource)
     }
 
 }

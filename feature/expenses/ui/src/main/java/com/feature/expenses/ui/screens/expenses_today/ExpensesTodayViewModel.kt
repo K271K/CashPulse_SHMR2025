@@ -7,10 +7,8 @@ import com.core.domain.models.TransactionDomainModel
 import com.core.domain.usecase.GetCurrencyUseCase
 import com.feature.expenses.domain.usecase.GetTodayExpensesUseCase
 import com.feature.expenses.ui.models.ExpensesUiModel
-import com.feature.expenses.ui.screens.expenses_today.ExpensesTodayScreenState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Provider

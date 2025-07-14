@@ -29,10 +29,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.core.ui.R
 import com.core.ui.components.DatePickerDialogComponent
-import com.core.ui.components.MyDatePickerRow
 import com.core.ui.components.MyErrorBox
 import com.core.ui.components.MyListItemOnlyText
 import com.core.ui.components.MyListItemWithLeadIcon
+import com.core.ui.components.MyPickerRow
 import com.core.ui.components.MyTopAppBar
 import com.core.ui.theme.GreenLight
 
@@ -95,7 +95,7 @@ fun IncomesHistoryScreenContent(
             }
 
             is IncomesHistoryScreenState.Loaded -> {
-                MyDatePickerRow(
+                MyPickerRow(
                     trailingText = "Начало",
                     leadingText = uiState.data.startDate,
                     onClick = {
@@ -103,7 +103,7 @@ fun IncomesHistoryScreenContent(
                     }
                 )
                 HorizontalDivider()
-                MyDatePickerRow(
+                MyPickerRow(
                     trailingText = "Конец",
                     leadingText = uiState.data.endDate,
                     onClick = {
@@ -187,13 +187,13 @@ fun IncomesHistoryScreenContent(
             IncomesHistoryScreenState.Loading -> {
                 Column {
                     // Показываем заголовки даже во время загрузки
-                    MyDatePickerRow(
+                    MyPickerRow(
                         trailingText = "Начало",
                         leadingText = "Загрузка...",
                         onClick = { }
                     )
                     HorizontalDivider()
-                    MyDatePickerRow(
+                    MyPickerRow(
                         trailingText = "Конец",
                         leadingText = "Загрузка...",
                         onClick = { }

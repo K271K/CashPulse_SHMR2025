@@ -29,10 +29,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.core.ui.R
 import com.core.ui.components.DatePickerDialogComponent
-import com.core.ui.components.MyDatePickerRow
 import com.core.ui.components.MyErrorBox
 import com.core.ui.components.MyListItemOnlyText
 import com.core.ui.components.MyListItemWithLeadIcon
+import com.core.ui.components.MyPickerRow
 import com.core.ui.components.MyTopAppBar
 import com.core.ui.theme.GreenLight
 
@@ -40,7 +40,8 @@ import com.core.ui.theme.GreenLight
 fun ExpensesHistoryScreen(
     viewModelFactory: ExpensesHistoryViewModelFactory,
     onGoBackClick: () -> Unit,
-    onGoToAnalyticsClick: () -> Unit
+    onGoToAnalyticsClick: () -> Unit,
+    onGoToExpenseDetailScreen: (Int) -> Unit
 ) {
     val viewModel: ExpensesHistoryViewModel = viewModel(factory = viewModelFactory)
     val uiState by viewModel.historyScreenState.collectAsStateWithLifecycle()
@@ -55,6 +56,7 @@ fun ExpensesHistoryScreen(
             viewModel.updateEndDate(it)
         },
         onGoBackClick = onGoBackClick,
+        onGoToExpenseDetailScreen = onGoToExpenseDetailScreen,
     )
 }
 
@@ -65,7 +67,8 @@ fun ExpensesHistoryScreenContent(
     onChooseStartDate: (Long) -> Unit,
     onChooseEndDate: (Long) -> Unit,
     onGoBackClick: () -> Unit,
-    onGoToAnalyticsClick: () -> Unit
+    onGoToAnalyticsClick: () -> Unit,
+    onGoToExpenseDetailScreen: (Int) -> Unit
 ) {
     var showStartDatePickerDialog by remember { mutableStateOf(false) }
     var showEndDatePickerDialog by remember { mutableStateOf(false) }
@@ -105,17 +108,17 @@ fun ExpensesHistoryScreenContent(
             }
 
             is ExpensesHistoryScreenState.Loaded -> {
-                MyDatePickerRow(
-                    trailingText = "Начало",
-                    leadingText = uiState.data.startDate,
+                MyPickerRow(
+                    leadingText = "Начало",
+                    trailingText = uiState.data.startDate,
                     onClick = {
                         showStartDatePickerDialog = true
                     }
                 )
                 HorizontalDivider()
-                MyDatePickerRow(
-                    trailingText = "Конец",
-                    leadingText = uiState.data.endDate,
+                MyPickerRow(
+                    leadingText = "Конец",
+                    trailingText = uiState.data.endDate,
                     onClick = {
                         showEndDatePickerDialog = true
                     }
@@ -183,7 +186,7 @@ fun ExpensesHistoryScreenContent(
                                     )
                                 },
                                 onClick = {
-
+                                    onGoToExpenseDetailScreen.invoke(it.id)
                                 }
                             )
                             HorizontalDivider()
@@ -195,13 +198,13 @@ fun ExpensesHistoryScreenContent(
             ExpensesHistoryScreenState.Loading -> {
                 Column {
                     // Показываем заголовки даже во время загрузки
-                    MyDatePickerRow(
+                    MyPickerRow(
                         trailingText = "Начало",
                         leadingText = "Загрузка...",
                         onClick = { }
                     )
                     HorizontalDivider()
-                    MyDatePickerRow(
+                    MyPickerRow(
                         trailingText = "Конец",
                         leadingText = "Загрузка...",
                         onClick = { }

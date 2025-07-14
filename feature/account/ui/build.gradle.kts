@@ -39,9 +39,8 @@ dependencies {
 
     implementation(projects.core.navigation)
     implementation(projects.core.ui)
-    implementation(projects.core.domain)
 
-    implementation(projects.feature.account.domain)
+    api(projects.feature.account.domain)
     api(projects.feature.account.data)
 
     implementation(libs.dagger.dagger)

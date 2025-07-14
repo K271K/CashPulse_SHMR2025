@@ -1,15 +1,12 @@
-package com.feature.expenses.ui.screens.expenses_add
+package com.feature.expenses.ui.screens.expenses_expense_deatils
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TimePickerState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.core.domain.constants.CoreDomainConstants.ACCOUNT_ID
-import com.core.domain.models.CreateTransactionDomainModel
-import com.core.domain.usecase.CreateTransactionUseCase
 import com.core.domain.usecase.GetExpenseCategoriesUseCase
-import com.core.domain.utils.formatDateToISO8061
+import com.core.domain.usecase.GetTransactionByIdUseCase
 import com.core.ui.models.CategoryPickerUiModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,35 +21,47 @@ import java.util.TimeZone
 import javax.inject.Inject
 import javax.inject.Provider
 
-class AddExpenseViewModel @Inject constructor(
-    private val createTransactionUseCase: CreateTransactionUseCase,
+class EditExpenseViewModel @Inject constructor(
     private val getExpenseCategoriesUseCase: GetExpenseCategoriesUseCase,
+    private val getExpenseByIdUseCase: GetTransactionByIdUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(AddExpenseUiState(isLoading = true))
-    val uiState: StateFlow<AddExpenseUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(EditExpenseScreenUiState(isLoading = true))
+    val uiState: StateFlow<EditExpenseScreenUiState> = _uiState.asStateFlow()
 
-    init {
+    fun initFromComposable(expenseId: Int) {
         viewModelScope.launch {
-            getExpenseCategoriesUseCase()
-                .onSuccess { categoriesList ->
-                    val mappedCategoriesList = categoriesList.map {
-                        CategoryPickerUiModel(
-                            name = it.name,
-                            emoji = it.emoji,
-                            id = it.id
-                        )
-                    }
-                    _uiState.update {
-                        it.copy(
+            _uiState.update { it.copy(isLoading = true) }
+            try {
+                getExpenseCategoriesUseCase()
+                    .onSuccess { categoriesList->
+                        val result = getExpenseByIdUseCase.invoke(expenseId)
+                        println(result)
+                        val selectedCategory = categoriesList.find { it.name == result.category.name } ?: throw Exception("No category found")
+                        val mappedCategoriesList = categoriesList.map {
+                            CategoryPickerUiModel(
+                                name = it.name,
+                                emoji = it.emoji,
+                                id = it.id
+                            )
+                        }
+                        _uiState.update { it.copy(
+                            isLoading = false,
+                            selectedCategory = CategoryPickerUiModel(
+                                name = selectedCategory.name,
+                                id = selectedCategory.id,
+                                emoji = selectedCategory.emoji
+                            ),
                             categories = mappedCategoriesList,
-                            isLoading = false
-                        )
+                            amount = result.amount,
+                            date = result.transactionDate,
+                            time = result.transactionDate,
+                            comment = result.comment
+                        ) }
                     }
-                }
-                .onFailure { e ->
-                    _uiState.update { it.copy(isLoading = false, error = e.message) }
-                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(error = e.message) }
+            }
         }
     }
 
@@ -84,46 +93,19 @@ class AddExpenseViewModel @Inject constructor(
     fun setComment(comment: String) {
         _uiState.update { it.copy(comment = comment) }
     }
-
-    fun createTransaction(
-        onSuccess: ()-> Unit
-    ) {
-        viewModelScope.launch {
-            val formattedDate = formatDateToISO8061(
-                date = _uiState.value.date,
-                time = _uiState.value.time
-            )
-            createTransactionUseCase(
-                CreateTransactionDomainModel(
-                    accountId = ACCOUNT_ID,
-                    categoryId = _uiState.value.selectedCategory?.id
-                        ?: throw Exception("Category is not selected"),
-                    amount = _uiState.value.amount,
-                    transactionDate = formattedDate,
-                    comment = _uiState.value.comment
-                )
-            )
-                .onSuccess {
-                    delay(1000)
-                    onSuccess()
-                }
-                .onFailure { e ->
-                    _uiState.update { it.copy(error = e.message) }
-                }
-        }
-    }
 }
 
 /**
  * Тут лежит фабрика для ViewModel. Мне кажется так проще в коде ориентироваться,
  * не вижу смысла отдельную папку сувать viewModels и в отдельную папку сувать фабрики для них
  */
-class AddExpenseViewModelFactory @Inject constructor(
-    private val viewModelProvider: Provider<AddExpenseViewModel>
+class EditExpenseViewModelFactory @Inject constructor(
+    private val viewModelProvider: Provider<EditExpenseViewModel>,
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return viewModelProvider.get() as T
     }
+
 }

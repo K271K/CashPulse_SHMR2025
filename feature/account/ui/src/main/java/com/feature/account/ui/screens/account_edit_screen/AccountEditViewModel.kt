@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.core.domain.models.AccountDomainModel
 import com.feature.account.domain.usecase.GetAccountUseCase
 import com.feature.account.domain.usecase.UpdateAccountUseCase
-import com.feature.account.ui.screens.accounts_screen.AccountsViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

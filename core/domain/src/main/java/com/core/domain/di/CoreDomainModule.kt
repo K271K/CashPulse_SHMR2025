@@ -1,7 +1,10 @@
 package com.core.domain.di
 
+import com.core.domain.repository.CategoryRepository
 import com.core.domain.repository.CurrencyRepository
+import com.core.domain.usecase.GetCategoriesUseCase
 import com.core.domain.usecase.GetCurrencyUseCase
+import com.core.domain.usecase.GetExpenseCategoriesUseCase
 import dagger.Module
 import dagger.Provides
 
@@ -13,4 +16,11 @@ object CoreDomainModule {
         return GetCurrencyUseCase(repository)
     }
 
+    @Provides
+    fun provideGetCategoriesUseCase(repository: CategoryRepository): GetCategoriesUseCase =
+        GetCategoriesUseCase(repository = repository)
+
+    @Provides
+    fun provideGetExpenseCategoriesUseCase(repository: CategoryRepository): GetExpenseCategoriesUseCase =
+        GetExpenseCategoriesUseCase(repository = repository)
 }

@@ -4,10 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.core.domain.constants.CoreDomainConstants.ACCOUNT_ID
+import com.core.domain.models.TransactionDomainModel
+import com.core.domain.usecase.GetCurrencyUseCase
 import com.feature.expenses.domain.usecase.GetExpensesForPeriodUseCase
 import com.feature.expenses.ui.models.ExpensesHistoryUiModel
 import com.feature.expenses.ui.models.formatExpenseDate
-import com.feature.expenses.ui.screens.expenses_today.ExpensesTodayViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -18,9 +19,6 @@ import java.util.Locale
 import java.util.TimeZone
 import javax.inject.Inject
 import javax.inject.Provider
-
-import com.core.domain.usecase.GetCurrencyUseCase
-import com.core.domain.models.TransactionDomainModel
 
 /**
  * Тут лежит сама ViewModel

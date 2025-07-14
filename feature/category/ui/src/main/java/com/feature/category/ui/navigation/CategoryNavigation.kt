@@ -8,6 +8,8 @@ import com.core.navigation.Dest
 import com.core.navigation.Feature
 import com.core.navigation.SubGraphDest
 import com.feature.category.ui.screens.CategoryScreen
+import com.feature.category.ui.screens.CategoryViewModelFactory
+import javax.inject.Inject
 
 /**
  * Наследуемся от интерфейса Feature из :core:navigation
@@ -18,7 +20,9 @@ interface CategoryNavigation : Feature
 /**
  * internal имплементация интерфейса фичи, которая непосредственно задаёт граф навигации для фичи
  */
-internal class CategoryNavigationImpl : CategoryNavigation {
+internal class CategoryNavigationImpl @Inject constructor(
+    private val categoryViewModelFactory: CategoryViewModelFactory
+): CategoryNavigation {
     override fun registerGraph(
         navHostController: NavHostController,
         navGraphBuilder: NavGraphBuilder
@@ -27,7 +31,9 @@ internal class CategoryNavigationImpl : CategoryNavigation {
             startDestination = Dest.Category
         ) {
             composable<Dest.Category> {
-                CategoryScreen()
+                CategoryScreen(
+                    viewModelFactory = categoryViewModelFactory
+                )
             }
         }
     }

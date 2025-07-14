@@ -10,6 +10,7 @@ import com.core.navigation.Feature
 import com.core.navigation.SubGraphDest
 import com.feature.expenses.ui.screens.expenses_add.AddExpenseScreen
 import com.feature.expenses.ui.screens.expenses_add.AddExpenseViewModelFactory
+import com.feature.expenses.ui.screens.expenses_expense_deatils.EditExpenseViewModelFactory
 import com.feature.expenses.ui.screens.expenses_expense_deatils.ExpensesExpenseDetailScreen
 import com.feature.expenses.ui.screens.expenses_history.ExpensesHistoryScreen
 import com.feature.expenses.ui.screens.expenses_history.ExpensesHistoryViewModelFactory
@@ -34,7 +35,8 @@ interface ExpensesNavigation : Feature
 internal class ExpensesNavigationImpl @Inject constructor(
     private val expensesTodayViewModelFactory: ExpensesTodayViewModelFactory,
     private val expensesHistoryViewModelFactory: ExpensesHistoryViewModelFactory,
-    private val addExpenseViewModelFactory: AddExpenseViewModelFactory
+    private val addExpenseViewModelFactory: AddExpenseViewModelFactory,
+    private val editExpenseViewModelFactory: EditExpenseViewModelFactory
 ) : ExpensesNavigation {
     override fun registerGraph(
         navHostController: NavHostController,
@@ -47,10 +49,18 @@ internal class ExpensesNavigationImpl @Inject constructor(
                 ExpensesTodayScreen(
                     viewModelFactory = expensesTodayViewModelFactory,
                     onGoToHistoryClick = {
-                        navHostController.navigate(Dest.ExpensesHistory)
+                        navHostController.navigate(Dest.ExpensesHistory) {
+                            popUpTo(Dest.ExpensesToday) {
+                                inclusive = true
+                            }
+                        }
                     },
                     onGoToExpenseDetailScreen = { expenseId->
-                        navHostController.navigate(Dest.ExpensesExpenseDetails(id = expenseId))
+                        navHostController.navigate(Dest.ExpensesExpenseDetails(id = expenseId)) {
+                            popUpTo(Dest.ExpensesToday) {
+                                inclusive = true
+                            }
+                        }
                     }
                 )
             }
@@ -58,10 +68,21 @@ internal class ExpensesNavigationImpl @Inject constructor(
                 ExpensesHistoryScreen(
                     viewModelFactory = expensesHistoryViewModelFactory,
                     onGoBackClick = {
-                        navHostController.popBackStack()
+                        navHostController.navigate(Dest.ExpensesToday) {
+                            popUpTo(Dest.ExpensesHistory){
+                                inclusive =true
+                            }
+                        }
                     },
                     onGoToAnalyticsClick = {
 
+                    },
+                    onGoToExpenseDetailScreen = { expenseId->
+                        navHostController.navigate(Dest.ExpensesExpenseDetails(id = expenseId)) {
+                            popUpTo(Dest.ExpensesHistory) {
+                                inclusive = true
+                            }
+                        }
                     }
                 )
             }
@@ -70,21 +91,34 @@ internal class ExpensesNavigationImpl @Inject constructor(
                 ExpensesExpenseDetailScreen(
                     expenseId = args.id,
                     onCancelClick = {
-                        navHostController.popBackStack()
+                        navHostController.navigate(Dest.ExpensesToday){
+                            popUpTo(Dest.ExpensesExpenseDetails(args.id)) {
+                                inclusive = true
+                            }
+                        }
                     },
                     onDoneClick = {
 
-                    }
+                    },
+                    viewModelFactory = editExpenseViewModelFactory
                 )
             }
             composable<Dest.ExpensesAdd> {
                 AddExpenseScreen(
                     viewModelFactory = addExpenseViewModelFactory,
                     onCancelClick = {
-                        navHostController.popBackStack()
+                        navHostController.navigate(Dest.ExpensesToday) {
+                            popUpTo(Dest.ExpensesAdd){
+                                inclusive =true
+                            }
+                        }
                     },
                     onSaveClick = {
-                        navHostController.popBackStack()
+                        navHostController.navigate(Dest.ExpensesToday) {
+                            popUpTo(Dest.ExpensesAdd){
+                                inclusive =true
+                            }
+                        }
                     }
                 )
             }
