@@ -57,6 +57,7 @@ class CategoryViewModel @Inject constructor(
         }
     }
 
+    @OptIn(kotlinx.coroutines.FlowPreview::class)
     private fun observeSearchQuery() {
         viewModelScope.launch {
             _searchQuery.debounce(300).collect { query ->
