@@ -29,11 +29,6 @@ fun MainNavigation(
                 navController = navController
             )
         },
-        floatingActionButton = {
-            MyFloatingActionButton(
-                navController = navController
-            )
-        }
     ) { innerPadding ->
         NavHost(
             startDestination = SubGraphDest.Expenses,

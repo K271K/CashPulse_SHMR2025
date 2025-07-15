@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.core.domain.usecase.GetExpenseCategoriesUseCase
 import com.core.domain.usecase.GetTransactionByIdUseCase
+import com.core.domain.utils.formatISO8601ToDate
+import com.core.domain.utils.formatISO8601ToTime
 import com.core.ui.models.CategoryPickerUiModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -54,8 +56,8 @@ class EditExpenseViewModel @Inject constructor(
                             ),
                             categories = mappedCategoriesList,
                             amount = result.amount,
-                            date = result.transactionDate,
-                            time = result.transactionDate,
+                            date = formatISO8601ToDate(result.transactionDate),
+                            time = formatISO8601ToTime(result.transactionDate),
                             comment = result.comment
                         ) }
                     }

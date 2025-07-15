@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.core.domain.constants.CoreDomainConstants.ACCOUNT_ID
 import com.core.domain.models.TransactionDomainModel
 import com.core.domain.usecase.GetCurrencyUseCase
+import com.core.domain.utils.formatISO8601ToDate
+import com.core.domain.utils.formatISO8601ToTime
 import com.feature.expenses.domain.usecase.GetExpensesForPeriodUseCase
 import com.feature.expenses.ui.models.ExpensesHistoryUiModel
 import com.feature.expenses.ui.models.formatExpenseDate
@@ -122,7 +124,7 @@ class ExpensesHistoryViewModel @Inject constructor(
                     name = it.category.name,
                     description = it.comment,
                     amount = it.amount,
-                    time = it.transactionDate.formatExpenseDate(),
+                    time = "${formatISO8601ToDate(it.transactionDate)} ${formatISO8601ToTime(it.transactionDate)}",
                     currency = currency,
                     id = it.id
                 )

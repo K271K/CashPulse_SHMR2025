@@ -23,6 +23,7 @@ import javax.inject.Inject
  * Интерфейс фичи открытый и используется в :app модуле для регистрации фичи в навигации
  */
 interface ExpensesNavigation : Feature
+
 /**
  * internal имплементация интерфейса фичи, которая непосредственно задаёт граф навигации для фичи
  *
@@ -55,8 +56,17 @@ internal class ExpensesNavigationImpl @Inject constructor(
                             }
                         }
                     },
-                    onGoToExpenseDetailScreen = { expenseId->
+                    onGoToAddExpenseClick = {
+                        navHostController.navigate(Dest.ExpensesAdd) {
+                            launchSingleTop = true
+                            popUpTo(Dest.ExpensesToday) {
+                                inclusive = true
+                            }
+                        }
+                    },
+                    onGoToExpenseDetailScreen = { expenseId ->
                         navHostController.navigate(Dest.ExpensesExpenseDetails(id = expenseId)) {
+                            launchSingleTop = true
                             popUpTo(Dest.ExpensesToday) {
                                 inclusive = true
                             }
@@ -69,16 +79,18 @@ internal class ExpensesNavigationImpl @Inject constructor(
                     viewModelFactory = expensesHistoryViewModelFactory,
                     onGoBackClick = {
                         navHostController.navigate(Dest.ExpensesToday) {
-                            popUpTo(Dest.ExpensesHistory){
-                                inclusive =true
+                            popUpTo(Dest.ExpensesHistory) {
+                                inclusive = true
                             }
                         }
                     },
                     onGoToAnalyticsClick = {
 
                     },
-                    onGoToExpenseDetailScreen = { expenseId->
+                    onGoToExpenseDetailScreen = { expenseId ->
+
                         navHostController.navigate(Dest.ExpensesExpenseDetails(id = expenseId)) {
+                            launchSingleTop = true
                             popUpTo(Dest.ExpensesHistory) {
                                 inclusive = true
                             }
@@ -91,7 +103,7 @@ internal class ExpensesNavigationImpl @Inject constructor(
                 ExpensesExpenseDetailScreen(
                     expenseId = args.id,
                     onCancelClick = {
-                        navHostController.navigate(Dest.ExpensesToday){
+                        navHostController.navigate(Dest.ExpensesToday) {
                             popUpTo(Dest.ExpensesExpenseDetails(args.id)) {
                                 inclusive = true
                             }
@@ -108,15 +120,15 @@ internal class ExpensesNavigationImpl @Inject constructor(
                     viewModelFactory = addExpenseViewModelFactory,
                     onCancelClick = {
                         navHostController.navigate(Dest.ExpensesToday) {
-                            popUpTo(Dest.ExpensesAdd){
-                                inclusive =true
+                            popUpTo(Dest.ExpensesAdd) {
+                                inclusive = true
                             }
                         }
                     },
                     onSaveClick = {
                         navHostController.navigate(Dest.ExpensesToday) {
-                            popUpTo(Dest.ExpensesAdd){
-                                inclusive =true
+                            popUpTo(Dest.ExpensesAdd) {
+                                inclusive = true
                             }
                         }
                     }
@@ -124,5 +136,4 @@ internal class ExpensesNavigationImpl @Inject constructor(
             }
         }
     }
-
 }
