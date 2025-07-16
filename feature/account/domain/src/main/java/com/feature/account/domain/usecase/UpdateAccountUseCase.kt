@@ -1,7 +1,7 @@
 package com.feature.account.domain.usecase
 
 import com.core.domain.models.AccountDomainModel
-import com.feature.account.domain.repository.AccountRepository
+import com.core.domain.repository.AccountRepository
 import javax.inject.Inject
 
 class UpdateAccountUseCase @Inject constructor(

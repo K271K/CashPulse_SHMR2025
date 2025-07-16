@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.core.domain.models.AccountDomainModel
-import com.feature.account.domain.usecase.GetAccountUseCase
+import com.core.domain.usecase.GetAccountUseCase
 import com.feature.account.domain.usecase.UpdateAccountUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -34,20 +34,22 @@ class AccountEditViewModel @Inject constructor(
     fun loadAccount(accountId: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
-            try {
-                val account = getAccountUseCase(accountId)
-                _uiState.update {
-                    it.copy(
-                        id = account.id,
-                        name = account.name,
-                        balance = account.balance,
-                        currency = account.currency,
-                        isLoading = false
-                    )
+
+            val account = getAccountUseCase(accountId)
+                .onSuccess { account ->
+                    _uiState.update {
+                        it.copy(
+                            id = account.id,
+                            name = account.name,
+                            balance = account.balance,
+                            currency = account.currency,
+                            isLoading = false
+                        )
+                    }
                 }
-            } catch (e: Exception) {
-                _uiState.update { it.copy(isLoading = false, errorMessage = e.message) }
-            }
+                .onFailure { e ->
+                    _uiState.update { it.copy(isLoading = false, errorMessage = e.message) }
+                }
         }
     }
 
@@ -79,7 +81,8 @@ class AccountEditViewModel @Inject constructor(
             )
             updateAccountUseCase(account)
                 .onSuccess { updatedAccount ->
-                    _uiState.update { it.copy(
+                    _uiState.update {
+                        it.copy(
                             isLoading = false,
                             errorMessage = null,
                             id = updatedAccount.id,

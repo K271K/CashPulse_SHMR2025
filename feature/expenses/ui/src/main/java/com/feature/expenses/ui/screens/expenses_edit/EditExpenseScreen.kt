@@ -65,7 +65,8 @@ fun EditExpenseScreen(
 
     ExpensesExpenseDetailScreenContent(
         uiState = uiState,
-        onCancelClick = onNavigateBack
+        onCancelClick = onNavigateBack,
+        onAmountChange = { viewModel.updateAmount(it) }
     )
 }
 
@@ -75,10 +76,8 @@ fun ExpensesExpenseDetailScreenContent(
     onCancelClick: () -> Unit = {},
     onSaveClick: () -> Unit = {},
     onDeleteClick: () -> Unit = {},
+    onAmountChange: (String) -> Unit = {},
 ) {
-    var amount by remember {
-        mutableStateOf("")
-    }
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -136,7 +135,6 @@ fun ExpensesExpenseDetailScreenContent(
                 }
             }
             is EditExpenseScreenUiState.Loaded -> {
-                amount = uiState.data.amount
                 MyListItemOnlyText(
                     modifier = Modifier
                         .height(70.dp),
@@ -182,16 +180,16 @@ fun ExpensesExpenseDetailScreenContent(
                     },
                     trailContent = {
                         BasicTextField(
-                            value = amount,
+                            value = uiState.data.amount,
                             onValueChange = {
-                                amount = it
+                                onAmountChange(it)
                             },
                             textStyle = MaterialTheme.typography.bodyLarge.copy(
                                 textAlign = TextAlign.End
                             ),
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Number,
-                                imeAction = ImeAction.Done
+                                imeAction = ImeAction.Next
                             ),
                             singleLine = true
                         )
@@ -232,7 +230,7 @@ fun ExpensesExpenseDetailScreenContent(
                                 textAlign = TextAlign.End
                             ),
                             keyboardOptions = KeyboardOptions(
-                                imeAction = ImeAction.Done
+                                imeAction = ImeAction.Next
                             ),
                             singleLine = true,
                         )

@@ -1,7 +1,11 @@
 package com.core.domain.utils
 
+import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDateTime
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 fun formatDateToISO8061(date: String, time: String): String{
     println("formatDateToISO8061 input: $date $time")
@@ -35,4 +39,13 @@ fun formatCurrencyFromTextToSymbol(currency: String): String {
         "RUB" -> "₽"
         else -> currency
     }
+}
+
+fun formatDateFromLongToHuman(date: Long): String {
+    val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    sdf.timeZone = TimeZone.getTimeZone("UTC")
+
+    val result = sdf.format(Date(date))
+
+    return result
 }

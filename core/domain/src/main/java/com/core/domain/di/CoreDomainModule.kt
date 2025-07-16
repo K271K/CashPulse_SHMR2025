@@ -1,7 +1,9 @@
 package com.core.domain.di
 
+import com.core.domain.repository.AccountRepository
 import com.core.domain.repository.CategoryRepository
 import com.core.domain.repository.CurrencyRepository
+import com.core.domain.usecase.GetAccountUseCase
 import com.core.domain.usecase.GetCategoriesUseCase
 import com.core.domain.usecase.GetCurrencyUseCase
 import com.core.domain.usecase.GetExpenseCategoriesUseCase
@@ -23,4 +25,9 @@ object CoreDomainModule {
     @Provides
     fun provideGetExpenseCategoriesUseCase(repository: CategoryRepository): GetExpenseCategoriesUseCase =
         GetExpenseCategoriesUseCase(repository = repository)
+
+    @Provides
+    fun provideGetAccountUseCase(repository: AccountRepository): GetAccountUseCase {
+        return GetAccountUseCase(repository = repository)
+    }
 }

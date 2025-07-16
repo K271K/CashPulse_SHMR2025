@@ -16,6 +16,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Provider
 
+/**
+ * ViewModel и фабрика для неё находятся в одном файле.
+ * Мне удобно так ориентироваться по коду.
+ * Не вижу смысла разделять их по разным файлам.
+ */
+
 class EditExpenseViewModel @Inject constructor(
     private val getExpenseCategoriesUseCase: GetExpenseCategoriesUseCase,
     private val getExpenseByIdUseCase: GetTransactionByIdUseCase,
@@ -53,12 +59,15 @@ class EditExpenseViewModel @Inject constructor(
                 }
         }
     }
+
+    fun updateAmount(newAmount: String) {
+        (_editExpenseScreenState.value as? EditExpenseScreenUiState.Loaded)?.let { currentState ->
+            val updatedData = currentState.data.copy(amount = newAmount)
+            _editExpenseScreenState.value = EditExpenseScreenUiState.Loaded(updatedData)
+        }
+    }
 }
 
-/**
- * Тут лежит фабрика для ViewModel. Мне кажется так проще в коде ориентироваться,
- * не вижу смысла отдельную папку сувать viewModels и в отдельную папку сувать фабрики для них
- */
 class EditExpenseViewModelFactory @Inject constructor(
     private val viewModelProvider: Provider<EditExpenseViewModel>,
 ) : ViewModelProvider.Factory {

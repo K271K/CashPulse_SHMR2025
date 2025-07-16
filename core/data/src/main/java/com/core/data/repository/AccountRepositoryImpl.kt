@@ -1,11 +1,11 @@
-package com.feature.account.data.repository
+package com.core.data.repository
 
 import com.core.data.models.mappers.toDataModel
 import com.core.data.models.mappers.toDomainModel
 import com.core.domain.models.AccountDomainModel
+import com.core.domain.repository.AccountRepository
 import com.core.network.RemoteDataSource
 import com.core.network.models.AccountNetwork
-import com.feature.account.domain.repository.AccountRepository
 import javax.inject.Inject
 
 class AccountRepositoryImpl @Inject constructor(

@@ -1,4 +1,4 @@
-package com.feature.account.domain.repository
+package com.core.domain.repository
 
 import com.core.domain.models.AccountDomainModel
 

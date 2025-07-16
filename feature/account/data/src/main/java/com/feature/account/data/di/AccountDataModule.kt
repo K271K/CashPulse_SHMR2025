@@ -1,7 +1,7 @@
 package com.feature.account.data.di
 
-import com.feature.account.data.repository.AccountRepositoryImpl
-import com.feature.account.domain.repository.AccountRepository
+import com.core.data.repository.AccountRepositoryImpl
+import com.core.domain.repository.AccountRepository
 import dagger.Binds
 import dagger.Module
 import javax.inject.Singleton
