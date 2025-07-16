@@ -8,4 +8,8 @@ interface TransactionRepository {
     suspend fun createTransaction(transaction: CreateTransactionDomainModel) : CreateTransactionDomainModel
 
     suspend fun getTransactionById(transactionId: Int): TransactionDomainModel
+
+    suspend fun deleteTransaction(transactionId: Int)
+
+    suspend fun updateTransaction(transaction: CreateTransactionDomainModel, transactionId: Int)
 }

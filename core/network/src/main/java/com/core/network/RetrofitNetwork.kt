@@ -7,10 +7,13 @@ import com.core.network.models.CreateTransactionResponseModel
 import com.core.network.models.TransactionNetwork
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Response
+import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -44,10 +47,21 @@ internal interface NetworkApi {
         @Body transaction: CreateTransactionRequestModel
     ) : CreateTransactionResponseModel
 
+    @PUT("transactions/{id}")
+    suspend fun updateTransaction(
+        @Path("id") transactionId: Int,
+        @Body transaction: CreateTransactionRequestModel
+    ) : CreateTransactionResponseModel
+
     @GET("transactions/{id}")
     suspend fun getTransactionById(
         @Path("id") transactionId: Int
     ): TransactionNetwork
+
+    @DELETE("transactions/{id}")
+    suspend fun deleteTransaction(
+        @Path("id") transactionId: Int
+    )
 }
 
 /**
@@ -113,7 +127,21 @@ class RetrofitNetwork @Inject constructor() : RemoteDataSource {
         return networkApi.createTransaction(transaction)
     }
 
+    override suspend fun updateTransaction(transaction: CreateTransactionRequestModel, transactionId: Int): CreateTransactionResponseModel {
+        return networkApi.updateTransaction(
+            transaction = transaction,
+            transactionId = transactionId
+        )
+    }
+
     override suspend fun getTransactionById(transactionId: Int): TransactionNetwork {
         return networkApi.getTransactionById(transactionId)
+    }
+
+    override suspend fun deleteTransaction(transactionId: Int) {
+        val response = networkApi.deleteTransaction(
+            transactionId = transactionId
+        )
+        println(response)
     }
 }

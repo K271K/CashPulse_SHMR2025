@@ -8,9 +8,14 @@ class GetTransactionByIdUseCase @Inject constructor(
     private val repository: TransactionRepository
 ) {
 
-    suspend operator fun invoke(transactionId: Int): TransactionDomainModel {
-        return repository.getTransactionById(
-            transactionId = transactionId
-        )
+    suspend operator fun invoke(transactionId: Int): Result<TransactionDomainModel> {
+        return try {
+            val transaction  = repository.getTransactionById(
+                transactionId = transactionId
+            )
+            return Result.success(transaction)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }

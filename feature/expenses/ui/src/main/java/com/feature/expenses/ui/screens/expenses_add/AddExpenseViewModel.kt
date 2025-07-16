@@ -11,6 +11,8 @@ import com.core.domain.usecase.CreateTransactionUseCase
 import com.core.domain.usecase.GetExpenseCategoriesUseCase
 import com.core.domain.utils.formatDateToISO8061
 import com.core.ui.models.CategoryPickerUiModel
+import com.feature.expenses.ui.screens.common.EditExpenseScreenUiState
+import com.feature.expenses.ui.screens.common.TransactionCreationState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,8 +31,8 @@ class AddExpenseViewModel @Inject constructor(
     private val getExpenseCategoriesUseCase: GetExpenseCategoriesUseCase,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(AddExpenseUiState(isLoading = true))
-    val uiState: StateFlow<AddExpenseUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(EditExpenseScreenUiState(isLoading = true))
+    val uiState: StateFlow<EditExpenseScreenUiState> = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -77,7 +79,7 @@ class AddExpenseViewModel @Inject constructor(
 
     @OptIn(ExperimentalMaterial3Api::class)
     fun setTime(time: TimePickerState) {
-        val formattedTime = "${time.hour}:${time.minute} "
+        val formattedTime = String.format("%02d:%02d", time.hour, time.minute)
         _uiState.update { it.copy(time = formattedTime) }
     }
 
@@ -85,10 +87,27 @@ class AddExpenseViewModel @Inject constructor(
         _uiState.update { it.copy(comment = comment) }
     }
 
-    fun createTransaction(
-        onSuccess: ()-> Unit
+    fun validateAndCreateTransaction(
+        onSuccess: () -> Unit,
+        onValidationError: (String) -> Unit
     ) {
         viewModelScope.launch {
+            // Валидация формы
+            val validationErrors = _uiState.value.getValidationErrors()
+            if (validationErrors.isNotEmpty()) {
+                val errorMessage = validationErrors.values.first()
+                onValidationError(errorMessage)
+                return@launch
+            }
+            // Создание транзакции
+            createTransaction(onSuccess)
+        }
+    }
+
+    private fun createTransaction(onSuccess: () -> Unit) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(transactionCreationState = TransactionCreationState.LOADING) }
+
             val formattedDate = formatDateToISO8061(
                 date = _uiState.value.date,
                 time = _uiState.value.time
@@ -104,13 +123,29 @@ class AddExpenseViewModel @Inject constructor(
                 )
             )
                 .onSuccess {
+                    _uiState.update { it.copy(transactionCreationState = TransactionCreationState.SUCCESS) }
                     delay(1000)
                     onSuccess()
                 }
                 .onFailure { e ->
-                    _uiState.update { it.copy(error = e.message) }
+                    _uiState.update {
+                        it.copy(
+                            transactionCreationState = TransactionCreationState.ERROR,
+                            error = e.message
+                        )
+                    }
                 }
         }
+    }
+
+    fun retryTransaction(onSuccess: () -> Unit) {
+        _uiState.update {
+            it.copy(
+                transactionCreationState = TransactionCreationState.LOADING,
+                error = null
+            )
+        }
+        validateAndCreateTransaction(onSuccess = onSuccess, onValidationError = {})
     }
 }
 

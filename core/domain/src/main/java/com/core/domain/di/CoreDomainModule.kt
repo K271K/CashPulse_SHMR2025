@@ -13,7 +13,7 @@ object CoreDomainModule {
 
     @Provides
     fun provideGetCurrencyUseCase(repository: CurrencyRepository): GetCurrencyUseCase {
-        return GetCurrencyUseCase(repository)
+        return GetCurrencyUseCase(repository = repository)
     }
 
     @Provides

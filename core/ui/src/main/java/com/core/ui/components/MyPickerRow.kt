@@ -17,6 +17,7 @@ fun MyPickerRow (
         .height(56.dp)
         .background(GreenLight),
     trailingText: String,
+    trailIcon: (@Composable () -> Unit)? = null,
     leadingText: String,
     onClick: () -> Unit,
 ) {
@@ -29,6 +30,9 @@ fun MyPickerRow (
         },
         trailContent = {
             Text(text = trailingText)
+            if (trailIcon != null) {
+                trailIcon()
+            }
         },
         onClick = {
             onClick.invoke()

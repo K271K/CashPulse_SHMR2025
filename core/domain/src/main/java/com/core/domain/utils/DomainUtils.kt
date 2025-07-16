@@ -18,11 +18,21 @@ fun formatDateToISO8061(date: String, time: String): String{
 fun formatISO8601ToDate(iso8601: String): String {
     val instant = Instant.parse(iso8601)
     val localDateTime = instant.atZone(java.time.ZoneId.systemDefault()).toLocalDateTime()
-    return localDateTime.format(java.time.format.DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+    return localDateTime.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 }
 
 fun formatISO8601ToTime(iso8601: String): String {
     val instant = Instant.parse(iso8601)
     val localDateTime = instant.atZone(java.time.ZoneId.systemDefault()).toLocalDateTime()
     return localDateTime.format(java.time.format.DateTimeFormatter.ofPattern("HH:mm"))
+}
+
+fun formatCurrencyFromTextToSymbol(currency: String): String {
+    return when (currency) {
+        "USD" -> "$"
+        "EUR" -> "€"
+        "GBP" -> "£"
+        "RUB" -> "₽"
+        else -> currency
+    }
 }

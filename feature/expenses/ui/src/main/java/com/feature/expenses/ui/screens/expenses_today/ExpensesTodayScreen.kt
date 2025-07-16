@@ -1,5 +1,7 @@
 package com.feature.expenses.ui.screens.expenses_today
 
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,29 +24,56 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.core.ui.R
 import com.core.ui.components.MyErrorBox
+import com.core.ui.components.MyFloatingActionButton
 import com.core.ui.components.MyListItemOnlyText
 import com.core.ui.components.MyListItemWithLeadIcon
 import com.core.ui.components.MyTopAppBar
 import com.core.ui.theme.GreenLight
 import com.core.ui.theme.GreenPrimary
+import kotlin.system.exitProcess
 
 @Composable
 fun ExpensesTodayScreen(
     viewModelFactory: ExpensesTodayViewModelFactory,
     onGoToHistoryClick: () -> Unit,
     onGoToExpenseDetailScreen: (Int) -> Unit,
-    onGoToAddExpenseClick: ()-> Unit,
+    onGoToAddExpenseClick: () -> Unit,
 ) {
     val viewModel: ExpensesTodayViewModel = viewModel(factory = viewModelFactory)
     val uiState by viewModel.expensesTodayScreenState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    var lastBackPressTime by remember { mutableLongStateOf(0L) }
+
+    //Если нажать назад два раза в течении 3 сек, приложение закроется
+    BackHandler {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastBackPressTime < 3000) {
+            exitProcess(0)
+        } else {
+            lastBackPressTime = currentTime
+            Toast.makeText(
+                context,
+                "Для выхода нажмите еще раз",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
     ExpensesTodayScreenContent(
         uiState = uiState,
         onGoToHistoryClick = onGoToHistoryClick,
@@ -158,22 +187,10 @@ fun ExpensesTodayScreenContent(
                 }
             }
         }
-
-        FloatingActionButton(
+        MyFloatingActionButton(
             onClick = onGoToAddExpenseClick,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(16.dp)
-                .size(56.dp),
-            shape = CircleShape,
-            containerColor = GreenPrimary,
-            elevation = FloatingActionButtonDefaults.elevation(0.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Добавить расход",
-                tint = androidx.compose.ui.graphics.Color.White
-            )
-        }
+        )
     }
 }

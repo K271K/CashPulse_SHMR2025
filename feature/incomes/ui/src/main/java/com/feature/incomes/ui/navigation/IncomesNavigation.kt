@@ -7,6 +7,7 @@ import androidx.navigation.compose.navigation
 import com.core.navigation.Dest
 import com.core.navigation.Feature
 import com.core.navigation.SubGraphDest
+import com.feature.incomes.ui.screens.incomes_add.AddIncomeScreen
 import com.feature.incomes.ui.screens.incomes_history.IncomesHistoryScreen
 import com.feature.incomes.ui.screens.incomes_history.IncomesHistoryViewModelFactory
 import com.feature.incomes.ui.screens.incomes_today.IncomesTodayScreen
@@ -41,6 +42,14 @@ internal class IncomesNavigationImpl @Inject constructor(
                     },
                     onGoToIncomeDetailScreen = {
 
+                    },
+                    navigateToAddIncomeScreen = {
+                        navHostController.navigate(Dest.IncomesAdd){
+                            launchSingleTop = true
+                            popUpTo(Dest.IncomesToday) {
+                                inclusive = true
+                            }
+                        }
                     }
                 )
             }
@@ -52,6 +61,18 @@ internal class IncomesNavigationImpl @Inject constructor(
                     },
                     onGoToAnalyticsClick = {
 
+                    }
+                )
+            }
+            composable<Dest.IncomesAdd> {
+                AddIncomeScreen (
+                    navigateBackToHistory = {
+                        navHostController.navigate(Dest.IncomesToday) {
+                            launchSingleTop = true
+                            popUpTo(Dest.IncomesAdd) {
+                                inclusive = true
+                            }
+                        }
                     }
                 )
             }

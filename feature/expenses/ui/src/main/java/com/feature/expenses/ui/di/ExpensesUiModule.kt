@@ -1,6 +1,5 @@
 package com.feature.expenses.ui.di
 
-import androidx.lifecycle.ViewModelProvider
 import com.core.data.di.CoreDataModule
 import com.feature.expenses.data.di.ExpensesDataModule
 import com.feature.expenses.domain.di.ExpensesDomainModule
@@ -8,17 +7,14 @@ import com.feature.expenses.ui.navigation.ExpensesNavigation
 import com.feature.expenses.ui.navigation.ExpensesNavigationImpl
 import com.feature.expenses.ui.screens.expenses_add.AddExpenseViewModel
 import com.feature.expenses.ui.screens.expenses_add.AddExpenseViewModelFactory
-import com.feature.expenses.ui.screens.expenses_expense_deatils.EditExpenseViewModel
-import com.feature.expenses.ui.screens.expenses_expense_deatils.EditExpenseViewModelFactory
+import com.feature.expenses.ui.screens.expenses_edit.EditExpenseViewModel
+import com.feature.expenses.ui.screens.expenses_edit.EditExpenseViewModelFactory
 import com.feature.expenses.ui.screens.expenses_history.ExpensesHistoryViewModel
 import com.feature.expenses.ui.screens.expenses_history.ExpensesHistoryViewModelFactory
 import com.feature.expenses.ui.screens.expenses_today.ExpensesTodayViewModel
 import com.feature.expenses.ui.screens.expenses_today.ExpensesTodayViewModelFactory
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
 import javax.inject.Provider
 import javax.inject.Singleton
 

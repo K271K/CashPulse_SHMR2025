@@ -1,7 +1,9 @@
 package com.example.cashpulse
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.example.cashpulse.navigation.DefaultNavigator

@@ -23,6 +23,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.core.ui.R
 import com.core.ui.components.MyErrorBox
+import com.core.ui.components.MyFloatingActionButton
 import com.core.ui.components.MyListItemOnlyText
 import com.core.ui.components.MyTopAppBar
 import com.core.ui.theme.GreenLight
@@ -31,14 +32,16 @@ import com.core.ui.theme.GreenLight
 fun IncomesTodayScreen(
     viewModelFactory: IncomesTodayViewModelFactory,
     onGoToHistoryClick: () -> Unit,
-    onGoToIncomeDetailScreen: (Int)-> Unit
+    onGoToIncomeDetailScreen: (Int)-> Unit,
+    navigateToAddIncomeScreen: () -> Unit,
 ) {
     val viewModel: IncomesTodayViewModel = viewModel(factory = viewModelFactory)
     val uiState by viewModel.incomesTodayScreenState.collectAsStateWithLifecycle()
     IncomesTodayScreenContent(
         uiState = uiState,
         onGoToHistoryClick = onGoToHistoryClick,
-        onGoToExpenseDetailScreen = onGoToIncomeDetailScreen
+        onGoToExpenseDetailScreen = onGoToIncomeDetailScreen,
+        navigateToAddIncomeScreen = navigateToAddIncomeScreen
     )
 }
 
@@ -46,77 +49,88 @@ fun IncomesTodayScreen(
 fun IncomesTodayScreenContent(
     uiState: IncomesTodayScreenState,
     onGoToHistoryClick: () -> Unit,
-    onGoToExpenseDetailScreen: (Int)-> Unit
+    onGoToExpenseDetailScreen: (Int)-> Unit,
+    navigateToAddIncomeScreen: () -> Unit,
 ) {
-    Column (
+    Box(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        MyTopAppBar(
-            text = "Доходы сегодня",
-            trailingIcon = R.drawable.history,
-            onTrailingIconClick = {
-                onGoToHistoryClick()
-            }
-        )
-        when (uiState) {
-            is IncomesTodayScreenState.Loading -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
+        Column (
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            MyTopAppBar(
+                text = "Доходы сегодня",
+                trailingIcon = R.drawable.history,
+                onTrailingIconClick = {
+                    onGoToHistoryClick()
                 }
-            }
-            is IncomesTodayScreenState.Error -> {
-                MyErrorBox(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    message = uiState.message
-                )
-            }
-            is IncomesTodayScreenState.Loaded -> {
-                MyListItemOnlyText(
-                    modifier = Modifier
-                        .height(56.dp)
-                        .background(GreenLight),
-                    content = {
-                        Text(text = "Всего")
-                    },
-                    trailContent = {
-                        Text(text = "${uiState.data.totalAmount} ${uiState.data.currency}")
+            )
+            when (uiState) {
+                is IncomesTodayScreenState.Loading -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
                     }
-                )
-                HorizontalDivider()
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 16.dp)
-                ) {
-                    items(
-                        items = uiState.data.incomes,
-                        key = { it.id }
-                    ) { income ->
-                        MyListItemOnlyText(
-                            modifier = Modifier
-                                .height(72.dp),
-                            content = {
-                                Text(text = income.categoryName)
-                            },
-                            trailContent = {
-                                Text(text = "${income.amount} ${income.currency}")
-                                Icon(
-                                    painter = painterResource(R.drawable.more_right),
-                                    contentDescription = null,
-                                )
-                            },
-                            onClick = null
-                        )
-                        HorizontalDivider()
+                }
+                is IncomesTodayScreenState.Error -> {
+                    MyErrorBox(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        message = uiState.message
+                    )
+                }
+                is IncomesTodayScreenState.Loaded -> {
+                    MyListItemOnlyText(
+                        modifier = Modifier
+                            .height(56.dp)
+                            .background(GreenLight),
+                        content = {
+                            Text(text = "Всего")
+                        },
+                        trailContent = {
+                            Text(text = "${uiState.data.totalAmount} ${uiState.data.currency}")
+                        }
+                    )
+                    HorizontalDivider()
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp)
+                    ) {
+                        items(
+                            items = uiState.data.incomes,
+                            key = { it.id }
+                        ) { income ->
+                            MyListItemOnlyText(
+                                modifier = Modifier
+                                    .height(72.dp),
+                                content = {
+                                    Text(text = income.categoryName)
+                                },
+                                trailContent = {
+                                    Text(text = "${income.amount} ${income.currency}")
+                                    Icon(
+                                        painter = painterResource(R.drawable.more_right),
+                                        contentDescription = null,
+                                    )
+                                },
+                                onClick = null
+                            )
+                            HorizontalDivider()
+                        }
                     }
                 }
             }
         }
+        MyFloatingActionButton(
+            onClick = navigateToAddIncomeScreen,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+        )
     }
 }
