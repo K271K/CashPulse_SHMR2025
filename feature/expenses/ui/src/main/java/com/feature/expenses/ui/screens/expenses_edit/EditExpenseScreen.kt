@@ -1,9 +1,11 @@
 package com.feature.expenses.ui.screens.expenses_edit
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +21,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -27,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -35,52 +40,122 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.core.ui.R
+import com.core.ui.components.CategoryPickerDialog
+import com.core.ui.components.DatePickerDialogComponent
 import com.core.ui.components.MyErrorBox
 import com.core.ui.components.MyListItemOnlyText
 import com.core.ui.components.MyLoadingIndicator
 import com.core.ui.components.MyPickerRow
 import com.core.ui.components.MyTopAppBar
+import com.core.ui.components.TimePickerDialogComponent
+import com.core.ui.models.CategoryPickerUiModel
 import com.core.ui.theme.GreenPrimary
+import com.feature.expenses.ui.screens.common.EditExpenseScreenUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditExpenseScreen(
-    viewModelFactory: EditExpenseViewModelFactory,
     expenseId: Int,
-    onNavigateBack: () -> Unit
+    viewModelFactory: EditExpenseViewModelFactory,
+    onNavigateBack: () -> Unit,
 ) {
-
-    val viewModel: EditExpenseViewModel = viewModel(
+    val viewModel: EditExpenseScreenViewModel = viewModel(
         factory = viewModelFactory
     )
-    val uiState by viewModel.editExpenseScreenState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(expenseId) {
-        viewModel.initWithExpenseId(expenseId)
+        viewModel.initWithId(
+            expenseId = expenseId
+        )
     }
 
     BackHandler {
         onNavigateBack()
     }
 
+    val context = LocalContext.current
+
+    val onUpdateTransactionClick = remember {
+        {
+            viewModel.validateAndUpdateTransaction(
+                expenseId = expenseId,
+                onValidationError = { errorMessage ->
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                }
+            )
+        }
+    }
+
+    val onDeleteTransactionClick = remember {
+        {
+            viewModel.deleteTransaction(
+                expenseId = expenseId,
+            )
+        }
+    }
+
     ExpensesExpenseDetailScreenContent(
         uiState = uiState,
-        onCancelClick = onNavigateBack,
-        onAmountChange = { viewModel.updateAmount(it) }
+        onCancelClick = {
+            onNavigateBack()
+        },
+        onAmountChange = {
+            viewModel.updateAmount(amount = it)
+        },
+        onDateChange = { selectedDateInMillis ->
+            viewModel.updateDate(dateInMillis = selectedDateInMillis)
+        },
+        onCategoryChange = { selectedCategory ->
+            viewModel.updateCategory(
+                category = selectedCategory
+            )
+        },
+        onTimeChange = { hour, minute ->
+            viewModel.updateTime(hour = hour, minute = minute)
+        },
+        onCommentChange = {
+            viewModel.updateComment(comment = it)
+        },
+        onUpdateTransactionClick = {
+            onUpdateTransactionClick()
+        },
+        onDeleteTransactionClick = {
+            onDeleteTransactionClick()
+        }
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpensesExpenseDetailScreenContent(
     uiState: EditExpenseScreenUiState,
-    onCancelClick: () -> Unit = {},
-    onSaveClick: () -> Unit = {},
-    onDeleteClick: () -> Unit = {},
-    onAmountChange: (String) -> Unit = {},
+    onCancelClick: () -> Unit,
+    afterSuccessUpdated: () -> Unit = onCancelClick,
+    onAmountChange: (String) -> Unit,
+    onDateChange: (Long) -> Unit,
+    onCategoryChange: (CategoryPickerUiModel) -> Unit,
+    onTimeChange: (Int, Int) -> Unit,
+    onCommentChange: (String) -> Unit,
+    onUpdateTransactionClick: () -> Unit,
+    onDeleteTransactionClick: () -> Unit
 ) {
+    var showDatePickerDialog by remember {
+        mutableStateOf(false)
+    }
+    val datePickerState = rememberDatePickerState()
+
+    var showTimePickerDialog by remember {
+        mutableStateOf(false)
+    }
+    val timePickerState = rememberTimePickerState()
+
+    var showCategoryPickerDialog by remember {
+        mutableStateOf(false)
+    }
     Column(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
     ) {
         MyTopAppBar(
             text = "Мои расходы",
@@ -90,25 +165,22 @@ fun ExpensesExpenseDetailScreenContent(
             },
             trailingIcon = R.drawable.check,
             onTrailingIconClick = {
-                onSaveClick()
+                onUpdateTransactionClick()
             }
         )
-        when (uiState) {
-            EditExpenseScreenUiState.Loading -> {
+        when {
+            uiState.isLoading -> {
                 MyLoadingIndicator()
             }
-
-            EditExpenseScreenUiState.Updating -> {
-                MyLoadingIndicator()
-            }
-
-            is EditExpenseScreenUiState.Error -> {
+            uiState.error != null -> {
                 MyErrorBox(
-                    message = uiState.message,
-                    onRetryClick = { },
+                    message = uiState.error,
+                    onRetryClick = {
+                        onUpdateTransactionClick()
+                    }
                 )
             }
-            is EditExpenseScreenUiState.Success -> {
+            uiState.success -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize(),
@@ -123,7 +195,7 @@ fun ExpensesExpenseDetailScreenContent(
                         )
                         TextButton(
                             onClick = {
-
+                                afterSuccessUpdated()
                             },
                             colors = ButtonDefaults.textButtonColors(
                                 contentColor = GreenPrimary
@@ -134,7 +206,8 @@ fun ExpensesExpenseDetailScreenContent(
                     }
                 }
             }
-            is EditExpenseScreenUiState.Loaded -> {
+
+            else -> {
                 MyListItemOnlyText(
                     modifier = Modifier
                         .height(70.dp),
@@ -145,7 +218,7 @@ fun ExpensesExpenseDetailScreenContent(
                     },
                     trailContent = {
                         Text(
-                            text = "${uiState.data.accountName}"
+                            text = uiState.accountName
                         )
                         Icon(
                             painter = painterResource(R.drawable.more_right),
@@ -158,7 +231,7 @@ fun ExpensesExpenseDetailScreenContent(
                     modifier = Modifier
                         .height(70.dp),
                     leadingText = "Статья",
-                    trailingText = uiState.data.categoryName,
+                    trailingText = uiState.categoryName,
                     trailIcon = {
                         Icon(
                             painter = painterResource(R.drawable.more_right),
@@ -166,7 +239,7 @@ fun ExpensesExpenseDetailScreenContent(
                         )
                     },
                     onClick = {
-
+                        showCategoryPickerDialog = true
                     }
                 )
                 HorizontalDivider()
@@ -179,20 +252,29 @@ fun ExpensesExpenseDetailScreenContent(
                         )
                     },
                     trailContent = {
-                        BasicTextField(
-                            value = uiState.data.amount,
-                            onValueChange = {
-                                onAmountChange(it)
-                            },
-                            textStyle = MaterialTheme.typography.bodyLarge.copy(
-                                textAlign = TextAlign.End
-                            ),
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number,
-                                imeAction = ImeAction.Next
-                            ),
-                            singleLine = true
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            BasicTextField(
+                                value = "${uiState.amount}",
+                                onValueChange = {
+                                    onAmountChange(it)
+                                },
+                                textStyle = MaterialTheme.typography.bodyLarge.copy(
+                                    textAlign = TextAlign.End
+                                ),
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Number,
+                                    imeAction = ImeAction.Next
+                                ),
+                                singleLine = true,
+                            )
+                            Text(
+                                text = uiState.currency,
+                                style = MaterialTheme.typography.bodyLarge,
+                                modifier = Modifier.padding(start = 4.dp) // Небольшой отступ от поля
+                            )
+                        }
                     }
                 )
                 HorizontalDivider()
@@ -200,9 +282,9 @@ fun ExpensesExpenseDetailScreenContent(
                     modifier = Modifier
                         .height(70.dp),
                     leadingText = "Дата",
-                    trailingText = uiState.data.expenseDate,
+                    trailingText = uiState.expenseDate,
                     onClick = {
-
+                        showDatePickerDialog = true
                     }
                 )
                 HorizontalDivider()
@@ -210,9 +292,9 @@ fun ExpensesExpenseDetailScreenContent(
                     modifier = Modifier
                         .height(70.dp),
                     leadingText = "Время",
-                    trailingText =  uiState.data.expenseTime,
+                    trailingText = uiState.expenseTime,
                     onClick = {
-
+                        showTimePickerDialog = true
                     }
                 )
                 HorizontalDivider()
@@ -224,8 +306,10 @@ fun ExpensesExpenseDetailScreenContent(
                     },
                     trailContent = {
                         BasicTextField(
-                            value = uiState.data.comment,
-                            onValueChange = {},
+                            value = uiState.comment,
+                            onValueChange = {
+                                onCommentChange(it)
+                            },
                             textStyle = MaterialTheme.typography.bodyLarge.copy(
                                 textAlign = TextAlign.End
                             ),
@@ -239,21 +323,57 @@ fun ExpensesExpenseDetailScreenContent(
                 HorizontalDivider()
                 Spacer(modifier = Modifier.height(32.dp))
                 Button(
-                    onClick = {
-
-                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
+                    onClick = {
+                        onDeleteTransactionClick()
+                    },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = MaterialTheme.colorScheme.onError
+                        containerColor = MaterialTheme.colorScheme.error
                     )
                 ) {
-                    Text(
-                        text = "Удалить расход"
-                    )
+                    Text(text = "Удалить расход")
                 }
+                CategoryPickerDialog(
+                    categoriesList = uiState.categories,
+                    showDialog = showCategoryPickerDialog,
+                    onDismiss = {
+                        showDatePickerDialog = false
+                    },
+                    onConfirm = { selectedCategory ->
+                        onCategoryChange(selectedCategory)
+                        showCategoryPickerDialog = false
+                    }
+                )
+                DatePickerDialogComponent(
+                    showDialog = showDatePickerDialog,
+                    datePickerState = datePickerState,
+                    onConfirm = {
+                        val selectedDateInMillis = datePickerState.selectedDateMillis
+                        selectedDateInMillis?.let {
+                            onDateChange(it)
+                        }
+                        showDatePickerDialog = false
+                    },
+                    onDismiss = {
+                        showDatePickerDialog = false
+                    }
+                )
+                TimePickerDialogComponent(
+                    showDialog = showTimePickerDialog,
+                    timePickerState = timePickerState,
+                    onDismiss = {
+                        showTimePickerDialog = false
+                    },
+                    onConfirm = {
+                        onTimeChange(
+                            timePickerState.hour,
+                            timePickerState.minute
+                        )
+                        showTimePickerDialog = false
+                    },
+                )
             }
         }
     }

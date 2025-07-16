@@ -1,5 +1,6 @@
 package com.feature.expenses.ui.screens.expenses_history
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,6 +46,10 @@ fun ExpensesHistoryScreen(
 ) {
     val viewModel: ExpensesHistoryViewModel = viewModel(factory = viewModelFactory)
     val uiState by viewModel.historyScreenState.collectAsStateWithLifecycle()
+
+    BackHandler {
+        onGoBackClick()
+    }
 
     ExpensesHistoryScreenContent(
         uiState = uiState,

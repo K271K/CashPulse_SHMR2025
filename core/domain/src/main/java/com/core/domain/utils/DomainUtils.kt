@@ -43,9 +43,7 @@ fun formatCurrencyFromTextToSymbol(currency: String): String {
 
 fun formatDateFromLongToHuman(date: Long): String {
     val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    sdf.timeZone = TimeZone.getTimeZone("UTC")
-
+    // Убираем UTC timezone, чтобы использовать локальную зону пользователя
     val result = sdf.format(Date(date))
-
     return result
 }

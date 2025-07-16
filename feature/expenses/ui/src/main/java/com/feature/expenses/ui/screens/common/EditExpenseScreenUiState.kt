@@ -2,33 +2,23 @@ package com.feature.expenses.ui.screens.common
 
 import com.core.ui.models.CategoryPickerUiModel
 
-enum class TransactionCreationState {
-    IDLE,
-    LOADING,
-    SUCCESS,
-    ERROR
-}
-
 /**
- * UiState для экранов добавления расходов и редактирования расходов
+ * Общий UiState для экранов добавления и редактирования расхода.
  */
 data class EditExpenseScreenUiState(
+    val isLoading: Boolean = false,
+    val success: Boolean = false,
+    val error: String? = null,
     val categories: List<CategoryPickerUiModel> = emptyList(),
     val selectedCategory: CategoryPickerUiModel? = null,
+    val currency: String = "",
+    val accountName: String = "",
+    val categoryName: String = "",
     val amount: String = "",
-    val date: String = "",
-    val time: String = "",
+    val expenseDate: String = "",
+    val expenseTime: String = "",
     val comment: String = "",
-    val isLoading: Boolean = false,
-    val error: String? = null,
-    val transactionCreationState: TransactionCreationState = TransactionCreationState.IDLE
 ) {
-    val isFormValid: Boolean
-        get() = selectedCategory != null &&
-                amount.isNotBlank() &&
-                date.isNotBlank() &&
-                time.isNotBlank()
-
     fun getValidationErrors(): Map<String, String> {
         val errors = mutableMapOf<String, String>()
 
@@ -38,10 +28,10 @@ data class EditExpenseScreenUiState(
         if (amount.isBlank()) {
             errors["amount"] = "Введите сумму"
         }
-        if (date.isBlank()) {
+        if (expenseDate.isBlank()) {
             errors["date"] = "Выберите дату"
         }
-        if (time.isBlank()) {
+        if (expenseTime.isBlank()) {
             errors["time"] = "Выберите время"
         }
 

@@ -4,12 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.core.domain.constants.CoreDomainConstants.ACCOUNT_ID
+import com.core.domain.models.CreateTransactionDomainModel
 import com.core.domain.usecase.CreateTransactionUseCase
 import com.core.domain.usecase.GetAccountUseCase
 import com.core.domain.usecase.GetExpenseCategoriesUseCase
 import com.core.domain.utils.formatCurrencyFromTextToSymbol
 import com.core.domain.utils.formatDateFromLongToHuman
+import com.core.domain.utils.formatDateToISO8061
 import com.core.ui.models.CategoryPickerUiModel
+import com.feature.expenses.ui.screens.common.EditExpenseScreenUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,14 +27,14 @@ import javax.inject.Provider
  * Не вижу смысла разделять их по разным файлам.
  */
 
-class AddExpenseViewModel @Inject constructor(
+class AddExpenseScreenViewModel @Inject constructor(
     private val createTransactionUseCase: CreateTransactionUseCase,
     private val getExpenseCategoriesUseCase: GetExpenseCategoriesUseCase,
     private val getAccountUseCase: GetAccountUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(AddExpenseScreenUiState(isLoading = false))
-    val uiState: StateFlow<AddExpenseScreenUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(EditExpenseScreenUiState(isLoading = false))
+    val uiState: StateFlow<EditExpenseScreenUiState> = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -104,10 +107,50 @@ class AddExpenseViewModel @Inject constructor(
             it.copy(comment = comment)
         }
     }
+
+    fun validateAndCreateTransaction(
+        onValidationError: (String) -> Unit
+    ) {
+        viewModelScope.launch {
+            val validationErrors = _uiState.value.getValidationErrors()
+            if (validationErrors.isNotEmpty()) {
+                val errorMessage = validationErrors.values.first()
+                onValidationError(errorMessage)
+                return@launch
+            }
+            _uiState.update {
+                it.copy(isLoading = true)
+            }
+            val dateISOFormatted = formatDateToISO8061(
+                date = _uiState.value.expenseDate,
+                time = _uiState.value.expenseTime
+            )
+            val domainModelTransaction = CreateTransactionDomainModel(
+                accountId = ACCOUNT_ID,
+                categoryId = _uiState.value.selectedCategory!!.id,
+                amount = _uiState.value.amount,
+                transactionDate = dateISOFormatted,
+                comment = _uiState.value.comment
+            )
+            createTransactionUseCase(
+                transaction = domainModelTransaction
+            )
+                .onSuccess {
+                    _uiState.update {
+                        it.copy(success = true, isLoading = false)
+                    }
+                }
+                .onFailure { e ->
+                    _uiState.update {
+                        it.copy(error = e.message, isLoading = false)
+                    }
+                }
+        }
+    }
 }
 
 class AddExpenseViewModelFactory @Inject constructor(
-    private val viewModelProvider: Provider<AddExpenseViewModel>
+    private val viewModelProvider: Provider<AddExpenseScreenViewModel>
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")

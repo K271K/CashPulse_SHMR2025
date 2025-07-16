@@ -5,9 +5,9 @@ import com.feature.expenses.data.di.ExpensesDataModule
 import com.feature.expenses.domain.di.ExpensesDomainModule
 import com.feature.expenses.ui.navigation.ExpensesNavigation
 import com.feature.expenses.ui.navigation.ExpensesNavigationImpl
-import com.feature.expenses.ui.screens.expenses_add.AddExpenseViewModel
+import com.feature.expenses.ui.screens.expenses_add.AddExpenseScreenViewModel
 import com.feature.expenses.ui.screens.expenses_add.AddExpenseViewModelFactory
-import com.feature.expenses.ui.screens.expenses_edit.EditExpenseViewModel
+import com.feature.expenses.ui.screens.expenses_edit.EditExpenseScreenViewModel
 import com.feature.expenses.ui.screens.expenses_edit.EditExpenseViewModelFactory
 import com.feature.expenses.ui.screens.expenses_history.ExpensesHistoryViewModel
 import com.feature.expenses.ui.screens.expenses_history.ExpensesHistoryViewModelFactory
@@ -61,7 +61,7 @@ object ExpensesUiModule {
     @Provides
     @Singleton
     fun provideAddExpenseViewModelFactory(
-        viewModelProvider: Provider<AddExpenseViewModel>
+        viewModelProvider: Provider<AddExpenseScreenViewModel>
     ) : AddExpenseViewModelFactory {
         return AddExpenseViewModelFactory(viewModelProvider)
     }
@@ -69,7 +69,7 @@ object ExpensesUiModule {
     @Provides
     @Singleton
     fun provideEditExpenseViewModelFactory(
-        viewModelProvider: Provider<EditExpenseViewModel>
+        viewModelProvider: Provider<EditExpenseScreenViewModel>
     ) : EditExpenseViewModelFactory {
         return EditExpenseViewModelFactory(viewModelProvider)
     }

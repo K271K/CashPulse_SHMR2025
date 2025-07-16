@@ -1,12 +1,12 @@
 package com.feature.expenses.ui.screens.expenses_add
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
@@ -18,7 +18,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
@@ -28,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -46,6 +46,7 @@ import com.core.ui.components.MyTopAppBar
 import com.core.ui.components.TimePickerDialogComponent
 import com.core.ui.models.CategoryPickerUiModel
 import com.core.ui.theme.GreenPrimary
+import com.feature.expenses.ui.screens.common.EditExpenseScreenUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,7 +54,7 @@ fun AddExpenseScreen(
     viewModelFactory: AddExpenseViewModelFactory,
     onNavigateBack: () -> Unit
 ) {
-    val viewModel: AddExpenseViewModel = viewModel(
+    val viewModel: AddExpenseScreenViewModel = viewModel(
         factory = viewModelFactory
     )
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -62,9 +63,21 @@ fun AddExpenseScreen(
         onNavigateBack()
     }
 
+    val context = LocalContext.current
+
+    val onCreateTransactionClick = remember {
+        {
+            viewModel.validateAndCreateTransaction(
+                onValidationError = { errorMessage ->
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                }
+            )
+        }
+    }
+
     AddExpenseScreenContent(
         uiState = uiState,
-        afterSuccessCreated = {
+        onCancelClick = {
             onNavigateBack()
         },
         onAmountChange = {
@@ -82,6 +95,9 @@ fun AddExpenseScreen(
         },
         onCommentChange = {
             viewModel.updateComment(comment = it)
+        },
+        onCreateTransactionClick = {
+            onCreateTransactionClick()
         }
     )
 }
@@ -89,13 +105,15 @@ fun AddExpenseScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddExpenseScreenContent(
-    uiState: AddExpenseScreenUiState,
-    afterSuccessCreated: () -> Unit,
+    uiState: EditExpenseScreenUiState,
+    onCancelClick: () -> Unit,
+    afterSuccessCreated: () -> Unit = onCancelClick,
     onAmountChange: (String) -> Unit,
     onDateChange: (Long) -> Unit,
     onCategoryChange: (CategoryPickerUiModel) -> Unit,
     onTimeChange: (Int, Int) -> Unit,
     onCommentChange: (String) -> Unit,
+    onCreateTransactionClick: () -> Unit,
 ) {
 
     var showDatePickerDialog by remember {
@@ -120,11 +138,11 @@ fun AddExpenseScreenContent(
             text = "Мои расходы",
             leadingIcon = R.drawable.cross,
             onLeadingIconClick = {
-
+                onCancelClick()
             },
             trailingIcon = R.drawable.check,
             onTrailingIconClick = {
-
+                onCreateTransactionClick()
             }
         )
         when {
