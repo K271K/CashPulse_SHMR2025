@@ -137,7 +137,7 @@ class AddExpenseScreenViewModel @Inject constructor(
             )
                 .onSuccess {
                     _uiState.update {
-                        it.copy(success = true, isLoading = false)
+                        it.copy(success = true, isLoading = false, error = null)
                     }
                 }
                 .onFailure { e ->

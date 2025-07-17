@@ -1,4 +1,4 @@
-package com.feature.expenses.ui.screens.expenses_add
+package com.feature.incomes.ui.screens.incomes_edit
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
@@ -6,11 +6,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -21,6 +24,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,18 +50,25 @@ import com.core.ui.components.MyTopAppBar
 import com.core.ui.components.TimePickerDialogComponent
 import com.core.ui.models.CategoryPickerUiModel
 import com.core.ui.theme.GreenPrimary
-import com.feature.expenses.ui.screens.common.EditExpenseScreenUiState
+import com.feature.incomes.ui.screens.common.IncomesEditScreenUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExpensesAddScreen(
-    viewModelFactory: AddExpenseViewModelFactory,
-    onNavigateBack: () -> Unit
+fun IncomesEditScreen(
+    incomeId: Int,
+    viewModelFactory: IncomesEditScreenViewModelFactory,
+    onNavigateBack: () -> Unit,
 ) {
-    val viewModel: AddExpenseScreenViewModel = viewModel(
+    val viewModel: IncomesEditScreenViewModel = viewModel(
         factory = viewModelFactory
     )
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(incomeId) {
+        viewModel.initWithId(
+            incomeId = incomeId
+        )
+    }
 
     BackHandler {
         onNavigateBack()
@@ -65,9 +76,10 @@ fun ExpensesAddScreen(
 
     val context = LocalContext.current
 
-    val onCreateTransactionClick = remember {
+    val onUpdateTransactionClick = remember {
         {
-            viewModel.validateAndCreateTransaction(
+            viewModel.validateAndUpdateTransaction(
+                expenseId = incomeId,
                 onValidationError = { errorMessage ->
                     Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                 }
@@ -75,7 +87,15 @@ fun ExpensesAddScreen(
         }
     }
 
-    AddExpenseScreenContent(
+    val onDeleteTransactionClick = remember {
+        {
+            viewModel.deleteTransaction(
+                expenseId = incomeId,
+            )
+        }
+    }
+
+    ExpensesExpenseDetailScreenContent(
         uiState = uiState,
         onCancelClick = {
             onNavigateBack()
@@ -87,7 +107,8 @@ fun ExpensesAddScreen(
             viewModel.updateDate(dateInMillis = selectedDateInMillis)
         },
         onCategoryChange = { selectedCategory ->
-            viewModel.updateCategory(category = selectedCategory
+            viewModel.updateCategory(
+                category = selectedCategory
             )
         },
         onTimeChange = { hour, minute ->
@@ -96,26 +117,29 @@ fun ExpensesAddScreen(
         onCommentChange = {
             viewModel.updateComment(comment = it)
         },
-        onCreateTransactionClick = {
-            onCreateTransactionClick()
+        onUpdateTransactionClick = {
+            onUpdateTransactionClick()
+        },
+        onDeleteTransactionClick = {
+            onDeleteTransactionClick()
         }
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddExpenseScreenContent(
-    uiState: EditExpenseScreenUiState,
+fun ExpensesExpenseDetailScreenContent(
+    uiState: IncomesEditScreenUiState,
     onCancelClick: () -> Unit,
-    afterSuccessCreated: () -> Unit = onCancelClick,
+    afterSuccessUpdated: () -> Unit = onCancelClick,
     onAmountChange: (String) -> Unit,
     onDateChange: (Long) -> Unit,
     onCategoryChange: (CategoryPickerUiModel) -> Unit,
     onTimeChange: (Int, Int) -> Unit,
     onCommentChange: (String) -> Unit,
-    onCreateTransactionClick: () -> Unit,
+    onUpdateTransactionClick: () -> Unit,
+    onDeleteTransactionClick: () -> Unit
 ) {
-
     var showDatePickerDialog by remember {
         mutableStateOf(false)
     }
@@ -129,20 +153,19 @@ fun AddExpenseScreenContent(
     var showCategoryPickerDialog by remember {
         mutableStateOf(false)
     }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
     ) {
         MyTopAppBar(
-            text = "Мои расходы",
+            text = "Мои доходы",
             leadingIcon = R.drawable.cross,
             onLeadingIconClick = {
                 onCancelClick()
             },
             trailingIcon = R.drawable.check,
             onTrailingIconClick = {
-                onCreateTransactionClick()
+                onUpdateTransactionClick()
             }
         )
         when {
@@ -153,7 +176,7 @@ fun AddExpenseScreenContent(
                 MyErrorBox(
                     message = uiState.error,
                     onRetryClick = {
-
+                        onUpdateTransactionClick()
                     }
                 )
             }
@@ -172,7 +195,7 @@ fun AddExpenseScreenContent(
                         )
                         TextButton(
                             onClick = {
-                                afterSuccessCreated()
+                                afterSuccessUpdated()
                             },
                             colors = ButtonDefaults.textButtonColors(
                                 contentColor = GreenPrimary
@@ -183,6 +206,7 @@ fun AddExpenseScreenContent(
                     }
                 }
             }
+
             else -> {
                 MyListItemOnlyText(
                     modifier = Modifier
@@ -297,6 +321,20 @@ fun AddExpenseScreenContent(
                     }
                 )
                 HorizontalDivider()
+                Spacer(modifier = Modifier.height(32.dp))
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    onClick = {
+                        onDeleteTransactionClick()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text(text = "Удалить расход")
+                }
                 CategoryPickerDialog(
                     categoriesList = uiState.categories,
                     showDialog = showCategoryPickerDialog,

@@ -8,9 +8,9 @@ import androidx.navigation.toRoute
 import com.core.navigation.Dest
 import com.core.navigation.Feature
 import com.core.navigation.SubGraphDest
-import com.feature.expenses.ui.screens.expenses_add.AddExpenseScreen
+import com.feature.expenses.ui.screens.expenses_add.ExpensesAddScreen
 import com.feature.expenses.ui.screens.expenses_add.AddExpenseViewModelFactory
-import com.feature.expenses.ui.screens.expenses_edit.EditExpenseScreen
+import com.feature.expenses.ui.screens.expenses_edit.ExpensesEditScreen
 import com.feature.expenses.ui.screens.expenses_edit.EditExpenseViewModelFactory
 import com.feature.expenses.ui.screens.expenses_history.ExpensesHistoryScreen
 import com.feature.expenses.ui.screens.expenses_history.ExpensesHistoryViewModelFactory
@@ -100,7 +100,7 @@ internal class ExpensesNavigationImpl @Inject constructor(
             }
             composable<Dest.ExpensesExpenseDetails> {
                 val args = it.toRoute<Dest.ExpensesExpenseDetails>()
-                EditExpenseScreen(
+                ExpensesEditScreen(
                     expenseId = args.id,
                     viewModelFactory = editExpenseViewModelFactory,
                     onNavigateBack = {
@@ -114,7 +114,7 @@ internal class ExpensesNavigationImpl @Inject constructor(
                 )
             }
             composable<Dest.ExpensesAdd> {
-                AddExpenseScreen(
+                ExpensesAddScreen(
                     viewModelFactory = addExpenseViewModelFactory,
                     onNavigateBack = {
                         navHostController.navigate(Dest.ExpensesToday) {

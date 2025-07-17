@@ -5,6 +5,10 @@ import com.feature.incomes.data.di.IncomesDataModule
 import com.feature.incomes.domain.di.IncomesDomainModule
 import com.feature.incomes.ui.navigation.IncomesNavigation
 import com.feature.incomes.ui.navigation.IncomesNavigationImpl
+import com.feature.incomes.ui.screens.incomes_add.IncomesAddScreenViewModel
+import com.feature.incomes.ui.screens.incomes_add.IncomesAddScreenViewModelFactory
+import com.feature.incomes.ui.screens.incomes_edit.IncomesEditScreenViewModel
+import com.feature.incomes.ui.screens.incomes_edit.IncomesEditScreenViewModelFactory
 import com.feature.incomes.ui.screens.incomes_history.IncomesHistoryViewModel
 import com.feature.incomes.ui.screens.incomes_history.IncomesHistoryViewModelFactory
 import com.feature.incomes.ui.screens.incomes_today.IncomesTodayViewModel
@@ -26,11 +30,15 @@ object IncomesUiModule {
     @Provides
     fun provideIncomesNavigation(
         incomesTodayViewModelFactory: IncomesTodayViewModelFactory,
-        incomesHistoryViewModelFactory: IncomesHistoryViewModelFactory
+        incomesHistoryViewModelFactory: IncomesHistoryViewModelFactory,
+        incomesAddViewModelFactory: IncomesAddScreenViewModelFactory,
+        incomesEditViewModelFactory: IncomesEditScreenViewModelFactory
     ): IncomesNavigation{
         return IncomesNavigationImpl(
             incomesTodayViewModelFactory = incomesTodayViewModelFactory,
-            incomesHistoryViewModelFactory = incomesHistoryViewModelFactory
+            incomesHistoryViewModelFactory = incomesHistoryViewModelFactory,
+            incomesAddViewModelFactory = incomesAddViewModelFactory,
+            incomesEditViewModelFactory = incomesEditViewModelFactory
         )
     }
 
@@ -48,6 +56,22 @@ object IncomesUiModule {
         viewModelProvider: Provider<IncomesHistoryViewModel>
     ) : IncomesHistoryViewModelFactory {
         return IncomesHistoryViewModelFactory(viewModelProvider)
+    }
+
+    @Provides
+    @Singleton
+    fun provideIncomesAddViewModelFactory(
+        viewModelProvider: Provider<IncomesAddScreenViewModel>
+    ) : IncomesAddScreenViewModelFactory {
+        return IncomesAddScreenViewModelFactory(viewModelProvider)
+    }
+
+    @Provides
+    @Singleton
+    fun provideIncomesEditViewModelFactory(
+        viewModelProvider: Provider<IncomesEditScreenViewModel>
+    ) : IncomesEditScreenViewModelFactory {
+        return IncomesEditScreenViewModelFactory(viewModelProvider)
     }
 
 }

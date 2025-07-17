@@ -1,4 +1,4 @@
-package com.feature.expenses.ui.screens.expenses_edit
+package com.feature.incomes.ui.screens.incomes_edit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.core.domain.constants.CoreDomainConstants.ACCOUNT_ID
 import com.core.domain.models.CreateTransactionDomainModel
 import com.core.domain.usecase.DeleteTransactionUseCase
-import com.core.domain.usecase.GetExpenseCategoriesUseCase
+import com.core.domain.usecase.GetIncomeCategoriesUseCase
 import com.core.domain.usecase.GetTransactionByIdUseCase
 import com.core.domain.usecase.UpdateTransactionUseCase
 import com.core.domain.utils.formatDateFromLongToHuman
@@ -14,7 +14,7 @@ import com.core.domain.utils.formatDateToISO8061
 import com.core.domain.utils.formatISO8601ToDate
 import com.core.domain.utils.formatISO8601ToTime
 import com.core.ui.models.CategoryPickerUiModel
-import com.feature.expenses.ui.screens.common.EditExpenseScreenUiState
+import com.feature.incomes.ui.screens.common.IncomesEditScreenUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,19 +29,19 @@ import javax.inject.Provider
  * Не вижу смысла разделять их по разным файлам.
  */
 
-class EditExpenseScreenViewModel @Inject constructor(
-    private val getExpenseCategoriesUseCase: GetExpenseCategoriesUseCase,
+class IncomesEditScreenViewModel @Inject constructor(
+    private val getIncomesCategoriesUseCase: GetIncomeCategoriesUseCase,
     private val getTransactionByIdUseCase: GetTransactionByIdUseCase,
     private val updateTransactionUseCase: UpdateTransactionUseCase,
     private val deleteTransactionUseCase: DeleteTransactionUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(EditExpenseScreenUiState(isLoading = true))
-    val uiState: StateFlow<EditExpenseScreenUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(IncomesEditScreenUiState(isLoading = true))
+    val uiState: StateFlow<IncomesEditScreenUiState> = _uiState.asStateFlow()
 
-    fun initWithId(expenseId: Int) {
+    fun initWithId(incomeId: Int) {
         viewModelScope.launch {
-            getExpenseCategoriesUseCase()
+            getIncomesCategoriesUseCase()
                 .onSuccess { categories ->
                     val mappedCategories = categories.map {
                         CategoryPickerUiModel(
@@ -61,7 +61,7 @@ class EditExpenseScreenViewModel @Inject constructor(
                     }
                 }
 
-            getTransactionByIdUseCase(transactionId = expenseId)
+            getTransactionByIdUseCase(transactionId = incomeId)
                 .onSuccess { loadedTransaction ->
                     val selectedCategory =
                         _uiState.value.categories.find { it.name == loadedTransaction.category.name }
@@ -183,8 +183,8 @@ class EditExpenseScreenViewModel @Inject constructor(
 
 }
 
-class EditExpenseViewModelFactory @Inject constructor(
-    private val viewModelProvider: Provider<EditExpenseScreenViewModel>,
+class IncomesEditScreenViewModelFactory @Inject constructor(
+    private val viewModelProvider: Provider<IncomesEditScreenViewModel>,
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")

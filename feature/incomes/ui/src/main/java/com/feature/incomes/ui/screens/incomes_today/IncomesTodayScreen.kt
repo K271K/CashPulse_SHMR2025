@@ -33,15 +33,15 @@ fun IncomesTodayScreen(
     viewModelFactory: IncomesTodayViewModelFactory,
     onGoToHistoryClick: () -> Unit,
     onGoToIncomeDetailScreen: (Int)-> Unit,
-    navigateToAddIncomeScreen: () -> Unit,
+    onGoToAddIncomeClick: () -> Unit,
 ) {
     val viewModel: IncomesTodayViewModel = viewModel(factory = viewModelFactory)
     val uiState by viewModel.incomesTodayScreenState.collectAsStateWithLifecycle()
     IncomesTodayScreenContent(
         uiState = uiState,
         onGoToHistoryClick = onGoToHistoryClick,
-        onGoToExpenseDetailScreen = onGoToIncomeDetailScreen,
-        navigateToAddIncomeScreen = navigateToAddIncomeScreen
+        onGoToIncomeDetailScreen = onGoToIncomeDetailScreen,
+        navigateToAddIncomeScreen = onGoToAddIncomeClick
     )
 }
 
@@ -49,7 +49,7 @@ fun IncomesTodayScreen(
 fun IncomesTodayScreenContent(
     uiState: IncomesTodayScreenState,
     onGoToHistoryClick: () -> Unit,
-    onGoToExpenseDetailScreen: (Int)-> Unit,
+    onGoToIncomeDetailScreen: (Int)-> Unit,
     navigateToAddIncomeScreen: () -> Unit,
 ) {
     Box(
@@ -119,7 +119,9 @@ fun IncomesTodayScreenContent(
                                         contentDescription = null,
                                     )
                                 },
-                                onClick = null
+                                onClick = {
+                                    onGoToIncomeDetailScreen(income.id)
+                                }
                             )
                             HorizontalDivider()
                         }

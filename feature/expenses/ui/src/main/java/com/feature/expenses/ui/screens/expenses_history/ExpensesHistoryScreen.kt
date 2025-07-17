@@ -191,7 +191,7 @@ fun ExpensesHistoryScreenContent(
                                     )
                                 },
                                 onClick = {
-                                    onGoToExpenseDetailScreen.invoke(it.id)
+                                    onGoToExpenseDetailScreen(it.id)
                                 }
                             )
                             HorizontalDivider()

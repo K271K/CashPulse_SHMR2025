@@ -54,7 +54,7 @@ import com.feature.expenses.ui.screens.common.EditExpenseScreenUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditExpenseScreen(
+fun ExpensesEditScreen(
     expenseId: Int,
     viewModelFactory: EditExpenseViewModelFactory,
     onNavigateBack: () -> Unit,

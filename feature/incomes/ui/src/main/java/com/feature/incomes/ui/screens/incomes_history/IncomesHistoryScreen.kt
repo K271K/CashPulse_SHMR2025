@@ -40,7 +40,8 @@ import com.core.ui.theme.GreenLight
 fun IncomesHistoryScreen(
     viewModelFactory: IncomesHistoryViewModelFactory,
     onGoBackClick: () -> Unit,
-    onGoToAnalyticsClick: () -> Unit
+    onGoToAnalyticsClick: () -> Unit,
+    onGoToIncomeDetailScreen: (Int) -> Unit
 ) {
     val viewModel: IncomesHistoryViewModel = viewModel(factory = viewModelFactory)
     val uiState by viewModel.incomesHistoryScreenState.collectAsStateWithLifecycle()
@@ -54,7 +55,8 @@ fun IncomesHistoryScreen(
             viewModel.updateEndDate(it)
         },
         onGoBackClick = onGoBackClick,
-        onGoToAnalyticsClick = onGoToAnalyticsClick
+        onGoToAnalyticsClick = onGoToAnalyticsClick,
+        onGoToIncomeDetailScreen = onGoToIncomeDetailScreen
     )
 }
 
@@ -65,7 +67,8 @@ fun IncomesHistoryScreenContent(
     onChooseStartDate: (Long) -> Unit,
     onChooseEndDate: (Long) -> Unit,
     onGoBackClick: () -> Unit,
-    onGoToAnalyticsClick: () -> Unit
+    onGoToAnalyticsClick: () -> Unit,
+    onGoToIncomeDetailScreen: (Int) -> Unit
 ) {
     var showStartDatePickerDialog by remember { mutableStateOf(false) }
     var showEndDatePickerDialog by remember { mutableStateOf(false) }
@@ -175,7 +178,7 @@ fun IncomesHistoryScreenContent(
                                     )
                                 },
                                 onClick = {
-
+                                    onGoToIncomeDetailScreen(it.id)
                                 }
                             )
                             HorizontalDivider()
