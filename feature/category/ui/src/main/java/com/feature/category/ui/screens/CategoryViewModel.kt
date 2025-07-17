@@ -1,15 +1,20 @@
 package com.feature.category.ui.screens
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.feature.category.domain.usecases.GetCategoriesUseCase
+import com.core.domain.usecase.GetCategoriesUseCase
 import com.feature.category.ui.models.CategoryUiModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Provider
 
+/**
+ * Тут лежит сама ViewModel
+ */
 class CategoryViewModel @Inject constructor(
     private val getCategoriesUseCase: GetCategoriesUseCase
 ) : ViewModel() {
@@ -52,6 +57,7 @@ class CategoryViewModel @Inject constructor(
         }
     }
 
+    @OptIn(kotlinx.coroutines.FlowPreview::class)
     private fun observeSearchQuery() {
         viewModelScope.launch {
             _searchQuery.debounce(300).collect { query ->
@@ -80,4 +86,18 @@ class CategoryViewModel @Inject constructor(
         _searchQuery.value = query
     }
 
+}
+
+/**
+ * Тут лежит фабрика для ViewModel. Мне кажется так проще в коде ориентироваться,
+ * не вижу смысла отдельную папку сувать viewModels и в отдельную папку сувать фабрики для них
+ */
+class CategoryViewModelFactory @Inject constructor(
+    private val viewModelProvider: Provider<CategoryViewModel>
+): ViewModelProvider.Factory {
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return viewModelProvider.get() as T
+    }
 }

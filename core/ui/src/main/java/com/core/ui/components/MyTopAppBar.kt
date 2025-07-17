@@ -124,7 +124,7 @@ private fun TopAppBarIcon(
 
 @Preview(showBackground = true)
 @Composable
-fun MyTopAppBarPreview(){
+private fun MyTopAppBarPreview(){
     MyTopAppBar(
         modifier = Modifier,
         text = "Мои расходы",

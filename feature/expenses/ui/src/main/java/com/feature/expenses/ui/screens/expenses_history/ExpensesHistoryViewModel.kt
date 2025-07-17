@@ -3,10 +3,14 @@ package com.feature.expenses.ui.screens.expenses_history
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.core.domain.constants.CoreDomainConstants.ACCOUNT_ID
+import com.core.domain.models.TransactionDomainModel
+import com.core.domain.usecase.GetCurrencyUseCase
+import com.core.domain.utils.formatISO8601ToDate
+import com.core.domain.utils.formatISO8601ToTime
 import com.feature.expenses.domain.usecase.GetExpensesForPeriodUseCase
 import com.feature.expenses.ui.models.ExpensesHistoryUiModel
 import com.feature.expenses.ui.models.formatExpenseDate
-import com.feature.expenses.ui.screens.expenses_today.ExpensesTodayViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -17,9 +21,6 @@ import java.util.Locale
 import java.util.TimeZone
 import javax.inject.Inject
 import javax.inject.Provider
-
-import com.core.domain.usecase.GetCurrencyUseCase
-import com.core.domain.models.TransactionDomainModel
 
 /**
  * Тут лежит сама ViewModel
@@ -96,7 +97,7 @@ class ExpensesHistoryViewModel @Inject constructor(
             try {
                 val currency = getCurrencyUseCase().getOrThrow()
                 val listOfExpenses =
-                    getExpensesForPeriodUseCase.invoke(startDate, endDate, accountId = 211)
+                    getExpensesForPeriodUseCase.invoke(startDate, endDate, accountId = ACCOUNT_ID)
                         .getOrThrow()
                 _expensesHistoryScreenState.value = ExpensesHistoryScreenState.Loaded(
                     data = toHistoryScreenData(listOfExpenses, startDate, endDate, currency)
@@ -123,7 +124,7 @@ class ExpensesHistoryViewModel @Inject constructor(
                     name = it.category.name,
                     description = it.comment,
                     amount = it.amount,
-                    time = it.transactionDate.formatExpenseDate(),
+                    time = "${formatISO8601ToDate(it.transactionDate)} ${formatISO8601ToTime(it.transactionDate)}",
                     currency = currency,
                     id = it.id
                 )

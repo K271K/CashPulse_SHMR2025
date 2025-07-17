@@ -37,7 +37,11 @@ internal class AccountNavigationImpl @Inject constructor(
             composable<Dest.AccountMain> {
                 AccountScreen(
                     onEditAccountDataClick = { accountId->
-                        navHostController.navigate(Dest.AccountEdit(id = accountId))
+                        navHostController.navigate(Dest.AccountEdit(id = accountId)) {
+                            popUpTo(Dest.AccountMain) {
+                                inclusive = true
+                            }
+                        }
                     },
                     viewModelFactory = accountsViewModelFactory
                 )
@@ -48,10 +52,18 @@ internal class AccountNavigationImpl @Inject constructor(
                     viewModelFactory = accountEditViewModelFactory,
                     accountId = args.id,
                     onDoneClick = {
-                        navHostController.popBackStack()
+                        navHostController.navigate(Dest.AccountMain){
+                            popUpTo(Dest.AccountMain) {
+                                inclusive = true
+                            }
+                        }
                     },
                     onCancelClick = {
-                        navHostController.popBackStack()
+                        navHostController.navigate(Dest.AccountMain){
+                            popUpTo(Dest.AccountMain) {
+                                inclusive = true
+                            }
+                        }
                     }
                 )
             }

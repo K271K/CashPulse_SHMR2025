@@ -2,14 +2,20 @@ package com.core.network
 
 import com.core.network.models.AccountNetwork
 import com.core.network.models.CategoryNetwork
+import com.core.network.models.CreateTransactionRequestModel
+import com.core.network.models.CreateTransactionResponseModel
 import com.core.network.models.TransactionNetwork
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Response
+import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -35,6 +41,27 @@ internal interface NetworkApi {
         @Path("id") id: Int,
         @Body account: AccountNetwork
     ): AccountNetwork
+
+    @POST("transactions")
+    suspend fun createTransaction(
+        @Body transaction: CreateTransactionRequestModel
+    ) : CreateTransactionResponseModel
+
+    @PUT("transactions/{id}")
+    suspend fun updateTransaction(
+        @Path("id") transactionId: Int,
+        @Body transaction: CreateTransactionRequestModel
+    ) : CreateTransactionResponseModel
+
+    @GET("transactions/{id}")
+    suspend fun getTransactionById(
+        @Path("id") transactionId: Int
+    ): TransactionNetwork
+
+    @DELETE("transactions/{id}")
+    suspend fun deleteTransaction(
+        @Path("id") transactionId: Int
+    )
 }
 
 /**
@@ -94,5 +121,27 @@ class RetrofitNetwork @Inject constructor() : RemoteDataSource {
             id = id,
             account = account
         )
+    }
+
+    override suspend fun createTransaction(transaction: CreateTransactionRequestModel): CreateTransactionResponseModel {
+        return networkApi.createTransaction(transaction)
+    }
+
+    override suspend fun updateTransaction(transaction: CreateTransactionRequestModel, transactionId: Int): CreateTransactionResponseModel {
+        return networkApi.updateTransaction(
+            transaction = transaction,
+            transactionId = transactionId
+        )
+    }
+
+    override suspend fun getTransactionById(transactionId: Int): TransactionNetwork {
+        return networkApi.getTransactionById(transactionId)
+    }
+
+    override suspend fun deleteTransaction(transactionId: Int) {
+        val response = networkApi.deleteTransaction(
+            transactionId = transactionId
+        )
+        println(response)
     }
 }

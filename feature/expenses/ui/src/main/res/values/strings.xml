@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="expense_add_ammount_text_field_placeholder">Впишите сумму</string>
+</resources>

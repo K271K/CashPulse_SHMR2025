@@ -30,8 +30,8 @@ fun MyBottomAppBar(
                     it.route == item.route::class.qualifiedName
                 } == true,
                 onClick = {
-                    Log.d("Navigation", "Navigating to ${item.route}, BackStack: $navBackStackEntry")
                     navController.navigate(item.route) {
+                        launchSingleTop = true
                         popUpTo(item.route){
                             inclusive = true
                         }

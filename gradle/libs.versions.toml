@@ -1,6 +1,6 @@
 [versions]
 agp = "8.8.0"
-kotlin = "2.0.21"
+kotlin = "2.1.21"
 coreKtx = "1.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -19,6 +19,7 @@ secretsVersion = "2.0.1"
 jetbrainsKotlinJvm = "2.0.21"
 dataStoreVersion="1.1.7"
 graphVersion = "2.9.0"
+kspVersion = "2.1.21-2.0.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -64,11 +65,10 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 android-library = { id = "com.android.library", version.ref = "agp" }
 # kapt
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref="kotlin"}
+# ksp
+kotlin-ksp = {id = "com.google.devtools.ksp", version.ref="kspVersion"}
 # сериализация
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-# hilt
-hilt = { id = "com.google.dagger.hilt.android", version.ref = "daggerVersion" }
-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 # секреты
 secrets-gradle={id="com.google.android.libraries.mapsplatform.secrets-gradle-plugin",version.ref="secretsVersion"}
 # граф зависимостей между модулями (с лекции по CI/CD)

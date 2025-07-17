@@ -1,5 +1,6 @@
 package com.feature.expenses.ui.screens.expenses_history
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
@@ -22,15 +24,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.core.ui.R
 import com.core.ui.components.DatePickerDialogComponent
-import com.core.ui.components.MyDatePickerRow
 import com.core.ui.components.MyErrorBox
 import com.core.ui.components.MyListItemOnlyText
 import com.core.ui.components.MyListItemWithLeadIcon
+import com.core.ui.components.MyPickerRow
 import com.core.ui.components.MyTopAppBar
 import com.core.ui.theme.GreenLight
 
@@ -38,10 +41,15 @@ import com.core.ui.theme.GreenLight
 fun ExpensesHistoryScreen(
     viewModelFactory: ExpensesHistoryViewModelFactory,
     onGoBackClick: () -> Unit,
-    onGoToAnalyticsClick: () -> Unit
+    onGoToAnalyticsClick: () -> Unit,
+    onGoToExpenseDetailScreen: (Int) -> Unit
 ) {
     val viewModel: ExpensesHistoryViewModel = viewModel(factory = viewModelFactory)
     val uiState by viewModel.historyScreenState.collectAsStateWithLifecycle()
+
+    BackHandler {
+        onGoBackClick()
+    }
 
     ExpensesHistoryScreenContent(
         uiState = uiState,
@@ -53,6 +61,7 @@ fun ExpensesHistoryScreen(
             viewModel.updateEndDate(it)
         },
         onGoBackClick = onGoBackClick,
+        onGoToExpenseDetailScreen = onGoToExpenseDetailScreen,
     )
 }
 
@@ -63,7 +72,8 @@ fun ExpensesHistoryScreenContent(
     onChooseStartDate: (Long) -> Unit,
     onChooseEndDate: (Long) -> Unit,
     onGoBackClick: () -> Unit,
-    onGoToAnalyticsClick: () -> Unit
+    onGoToAnalyticsClick: () -> Unit,
+    onGoToExpenseDetailScreen: (Int) -> Unit
 ) {
     var showStartDatePickerDialog by remember { mutableStateOf(false) }
     var showEndDatePickerDialog by remember { mutableStateOf(false) }
@@ -103,17 +113,17 @@ fun ExpensesHistoryScreenContent(
             }
 
             is ExpensesHistoryScreenState.Loaded -> {
-                MyDatePickerRow(
-                    trailingText = "Начало",
-                    leadingText = uiState.data.startDate,
+                MyPickerRow(
+                    leadingText = "Начало",
+                    trailingText = uiState.data.startDate,
                     onClick = {
                         showStartDatePickerDialog = true
                     }
                 )
                 HorizontalDivider()
-                MyDatePickerRow(
-                    trailingText = "Конец",
-                    leadingText = uiState.data.endDate,
+                MyPickerRow(
+                    leadingText = "Конец",
+                    trailingText = uiState.data.endDate,
                     onClick = {
                         showEndDatePickerDialog = true
                     }
@@ -175,9 +185,13 @@ fun ExpensesHistoryScreenContent(
                                         Text(text = "${it.amount} ${it.currency}")
                                         Text(text = it.time)
                                     }
+                                    Icon(
+                                        painter = painterResource(R.drawable.more_right),
+                                        contentDescription = null,
+                                    )
                                 },
                                 onClick = {
-
+                                    onGoToExpenseDetailScreen(it.id)
                                 }
                             )
                             HorizontalDivider()
@@ -189,13 +203,13 @@ fun ExpensesHistoryScreenContent(
             ExpensesHistoryScreenState.Loading -> {
                 Column {
                     // Показываем заголовки даже во время загрузки
-                    MyDatePickerRow(
+                    MyPickerRow(
                         trailingText = "Начало",
                         leadingText = "Загрузка...",
                         onClick = { }
                     )
                     HorizontalDivider()
-                    MyDatePickerRow(
+                    MyPickerRow(
                         trailingText = "Конец",
                         leadingText = "Загрузка...",
                         onClick = { }

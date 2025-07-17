@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.kotlin.serialization)
 }
 
@@ -39,13 +39,12 @@ dependencies {
 
     implementation(projects.core.navigation)
     implementation(projects.core.ui)
-    implementation(projects.core.domain)
 
-    implementation(projects.feature.account.domain)
+    api(projects.feature.account.domain)
     api(projects.feature.account.data)
 
     implementation(libs.dagger.dagger)
-    kapt(libs.dagger.compiler)
+    ksp(libs.dagger.compiler)
 
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)

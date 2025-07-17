@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
@@ -22,15 +23,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.core.ui.R
 import com.core.ui.components.DatePickerDialogComponent
-import com.core.ui.components.MyDatePickerRow
 import com.core.ui.components.MyErrorBox
 import com.core.ui.components.MyListItemOnlyText
 import com.core.ui.components.MyListItemWithLeadIcon
+import com.core.ui.components.MyPickerRow
 import com.core.ui.components.MyTopAppBar
 import com.core.ui.theme.GreenLight
 
@@ -38,7 +40,8 @@ import com.core.ui.theme.GreenLight
 fun IncomesHistoryScreen(
     viewModelFactory: IncomesHistoryViewModelFactory,
     onGoBackClick: () -> Unit,
-    onGoToAnalyticsClick: () -> Unit
+    onGoToAnalyticsClick: () -> Unit,
+    onGoToIncomeDetailScreen: (Int) -> Unit
 ) {
     val viewModel: IncomesHistoryViewModel = viewModel(factory = viewModelFactory)
     val uiState by viewModel.incomesHistoryScreenState.collectAsStateWithLifecycle()
@@ -52,7 +55,8 @@ fun IncomesHistoryScreen(
             viewModel.updateEndDate(it)
         },
         onGoBackClick = onGoBackClick,
-        onGoToAnalyticsClick = onGoToAnalyticsClick
+        onGoToAnalyticsClick = onGoToAnalyticsClick,
+        onGoToIncomeDetailScreen = onGoToIncomeDetailScreen
     )
 }
 
@@ -63,7 +67,8 @@ fun IncomesHistoryScreenContent(
     onChooseStartDate: (Long) -> Unit,
     onChooseEndDate: (Long) -> Unit,
     onGoBackClick: () -> Unit,
-    onGoToAnalyticsClick: () -> Unit
+    onGoToAnalyticsClick: () -> Unit,
+    onGoToIncomeDetailScreen: (Int) -> Unit
 ) {
     var showStartDatePickerDialog by remember { mutableStateOf(false) }
     var showEndDatePickerDialog by remember { mutableStateOf(false) }
@@ -93,7 +98,7 @@ fun IncomesHistoryScreenContent(
             }
 
             is IncomesHistoryScreenState.Loaded -> {
-                MyDatePickerRow(
+                MyPickerRow(
                     trailingText = "Начало",
                     leadingText = uiState.data.startDate,
                     onClick = {
@@ -101,7 +106,7 @@ fun IncomesHistoryScreenContent(
                     }
                 )
                 HorizontalDivider()
-                MyDatePickerRow(
+                MyPickerRow(
                     trailingText = "Конец",
                     leadingText = uiState.data.endDate,
                     onClick = {
@@ -167,9 +172,13 @@ fun IncomesHistoryScreenContent(
                                         Text(text = "${it.amount} ${it.currency}")
                                         Text(text = it.time)
                                     }
+                                    Icon(
+                                        painter = painterResource(R.drawable.more_right),
+                                        contentDescription = null,
+                                    )
                                 },
                                 onClick = {
-
+                                    onGoToIncomeDetailScreen(it.id)
                                 }
                             )
                             HorizontalDivider()
@@ -181,13 +190,13 @@ fun IncomesHistoryScreenContent(
             IncomesHistoryScreenState.Loading -> {
                 Column {
                     // Показываем заголовки даже во время загрузки
-                    MyDatePickerRow(
+                    MyPickerRow(
                         trailingText = "Начало",
                         leadingText = "Загрузка...",
                         onClick = { }
                     )
                     HorizontalDivider()
-                    MyDatePickerRow(
+                    MyPickerRow(
                         trailingText = "Конец",
                         leadingText = "Загрузка...",
                         onClick = { }

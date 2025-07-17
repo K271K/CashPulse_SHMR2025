@@ -9,11 +9,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.core.navigation.SubGraphDest
 import com.example.cashpulse.ui.components.MyBottomAppBar
-import com.example.cashpulse.ui.components.MyFloatingActionButton
 
 /**
- * BottomBar и FloatingActionButton задаются через Scaffold.
- * TopBar каждая фича рисует сама без использования Scaffold и Material3 TopAppBar.
+ * BottomBar задаются через Scaffold.
+ * TopBar и FloatingActionButton каждая фича рисует сама без использования Scaffold и Material3.
  */
 @Composable
 fun MainNavigation(
@@ -29,11 +28,6 @@ fun MainNavigation(
                 navController = navController
             )
         },
-        floatingActionButton = {
-            MyFloatingActionButton(
-                navController = navController
-            )
-        }
     ) { innerPadding ->
         NavHost(
             startDestination = SubGraphDest.Expenses,

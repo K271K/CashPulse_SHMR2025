@@ -1,5 +1,6 @@
 package com.feature.incomes.domain.usecase
 
+import com.core.domain.constants.CoreDomainConstants.ACCOUNT_ID
 import com.core.domain.models.TransactionDomainModel
 import com.feature.incomes.domain.repository.IncomesRepository
 import java.time.LocalDate
@@ -12,6 +13,6 @@ class GetTodayIncomesUseCase(
         val today = LocalDate.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val dateString = today.format(formatter)
-        return incomesRepository.getTodayIncomes(date = dateString, accountId = 211)
+        return incomesRepository.getTodayIncomes(date = dateString, accountId = ACCOUNT_ID)
     }
 }

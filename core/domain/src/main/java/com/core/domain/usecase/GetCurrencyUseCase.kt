@@ -1,7 +1,6 @@
 package com.core.domain.usecase
 
 import com.core.domain.repository.CurrencyRepository
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class GetCurrencyUseCase @Inject constructor(

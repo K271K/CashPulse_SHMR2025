@@ -5,9 +5,12 @@ import com.core.data.models.CategoryDataModel
 import com.core.data.models.TransactionDataModel
 import com.core.domain.models.AccountDomainModel
 import com.core.domain.models.CategoryDomainModel
+import com.core.domain.models.CreateTransactionDomainModel
 import com.core.domain.models.TransactionDomainModel
 import com.core.network.models.AccountNetwork
 import com.core.network.models.CategoryNetwork
+import com.core.network.models.CreateTransactionRequestModel
+import com.core.network.models.CreateTransactionResponseModel
 import com.core.network.models.TransactionNetwork
 
 fun TransactionDataModel.toDomainModel() =
@@ -70,6 +73,24 @@ fun AccountNetwork.toDataModel()=
         userId = this.userId,
         createdAt = this.createdAt,
         updatedAt = this.updatedAt,
+    )
+
+fun CreateTransactionDomainModel.toCreateTransactionRequestModel() =
+    CreateTransactionRequestModel(
+        accountId = this.accountId,
+        categoryId = this.categoryId,
+        amount = this.amount,
+        transactionDate = this.transactionDate,
+        comment = this.comment
+    )
+
+fun CreateTransactionResponseModel.toDomainModel() =
+    CreateTransactionDomainModel(
+        accountId = this.accountId!!,
+        categoryId = this.categoryId!!,
+        amount = this.amount!!,
+        transactionDate = this.transactionDate!!,
+        comment = this.comment!!
     )
 
 /**
