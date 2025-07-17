@@ -95,7 +95,7 @@ fun ExpensesEditScreen(
         }
     }
 
-    ExpensesExpenseDetailScreenContent(
+    ExpensesEditScreenContent(
         uiState = uiState,
         onCancelClick = {
             onNavigateBack()
@@ -128,7 +128,7 @@ fun ExpensesEditScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExpensesExpenseDetailScreenContent(
+private fun ExpensesEditScreenContent(
     uiState: EditExpenseScreenUiState,
     onCancelClick: () -> Unit,
     afterSuccessUpdated: () -> Unit = onCancelClick,
@@ -153,227 +153,229 @@ fun ExpensesExpenseDetailScreenContent(
     var showCategoryPickerDialog by remember {
         mutableStateOf(false)
     }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        MyTopAppBar(
-            text = "Мои расходы",
-            leadingIcon = R.drawable.cross,
-            onLeadingIconClick = {
-                onCancelClick()
-            },
-            trailingIcon = R.drawable.check,
-            onTrailingIconClick = {
-                onUpdateTransactionClick()
-            }
-        )
-        when {
-            uiState.isLoading -> {
-                MyLoadingIndicator()
-            }
-            uiState.error != null -> {
-                MyErrorBox(
-                    message = uiState.error,
-                    onRetryClick = {
-                        onUpdateTransactionClick()
-                    }
+    if (uiState.success) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Операция прошла успешно",
                 )
-            }
-            uiState.success -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentAlignment = Alignment.Center
+                TextButton(
+                    onClick = {
+                        afterSuccessUpdated()
+                    },
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = GreenPrimary
+                    )
                 ) {
-                    Column(
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "Операция прошла успешно",
-                        )
-                        TextButton(
-                            onClick = {
-                                afterSuccessUpdated()
-                            },
-                            colors = ButtonDefaults.textButtonColors(
-                                contentColor = GreenPrimary
-                            )
-                        ) {
-                            Text(text = "Назад")
-                        }
-                    }
+                    Text(text = "Назад")
                 }
             }
+        }
+    } else {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            MyTopAppBar(
+                text = "Мои расходы",
+                leadingIcon = R.drawable.cross,
+                onLeadingIconClick = {
+                    onCancelClick()
+                },
+                trailingIcon = R.drawable.check,
+                onTrailingIconClick = {
+                    onUpdateTransactionClick()
+                }
+            )
+            when {
+                uiState.isLoading -> {
+                    MyLoadingIndicator()
+                }
 
-            else -> {
-                MyListItemOnlyText(
-                    modifier = Modifier
-                        .height(70.dp),
-                    content = {
-                        Text(
-                            text = "Счёт"
-                        )
-                    },
-                    trailContent = {
-                        Text(
-                            text = uiState.accountName
-                        )
-                        Icon(
-                            painter = painterResource(R.drawable.more_right),
-                            contentDescription = "Bank account name"
-                        )
-                    }
-                )
-                HorizontalDivider()
-                MyPickerRow(
-                    modifier = Modifier
-                        .height(70.dp),
-                    leadingText = "Статья",
-                    trailingText = uiState.categoryName,
-                    trailIcon = {
-                        Icon(
-                            painter = painterResource(R.drawable.more_right),
-                            contentDescription = "Bank account name"
-                        )
-                    },
-                    onClick = {
-                        showCategoryPickerDialog = true
-                    }
-                )
-                HorizontalDivider()
-                MyListItemOnlyText(
-                    modifier = Modifier
-                        .height(70.dp),
-                    content = {
-                        Text(
-                            text = "Сумма"
-                        )
-                    },
-                    trailContent = {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
+                uiState.error != null -> {
+                    MyErrorBox(
+                        message = uiState.error,
+                        onRetryClick = {
+                            onUpdateTransactionClick()
+                        }
+                    )
+                }
+
+                else -> {
+                    MyListItemOnlyText(
+                        modifier = Modifier
+                            .height(70.dp),
+                        content = {
+                            Text(
+                                text = "Счёт"
+                            )
+                        },
+                        trailContent = {
+                            Text(
+                                text = uiState.accountName
+                            )
+                            Icon(
+                                painter = painterResource(R.drawable.more_right),
+                                contentDescription = "Bank account name"
+                            )
+                        }
+                    )
+                    HorizontalDivider()
+                    MyPickerRow(
+                        modifier = Modifier
+                            .height(70.dp),
+                        leadingText = "Статья",
+                        trailingText = uiState.categoryName,
+                        trailIcon = {
+                            Icon(
+                                painter = painterResource(R.drawable.more_right),
+                                contentDescription = "Bank account name"
+                            )
+                        },
+                        onClick = {
+                            showCategoryPickerDialog = true
+                        }
+                    )
+                    HorizontalDivider()
+                    MyListItemOnlyText(
+                        modifier = Modifier
+                            .height(70.dp),
+                        content = {
+                            Text(
+                                text = "Сумма"
+                            )
+                        },
+                        trailContent = {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                BasicTextField(
+                                    value = "${uiState.amount}",
+                                    onValueChange = {
+                                        onAmountChange(it)
+                                    },
+                                    textStyle = MaterialTheme.typography.bodyLarge.copy(
+                                        textAlign = TextAlign.End
+                                    ),
+                                    keyboardOptions = KeyboardOptions(
+                                        keyboardType = KeyboardType.Number,
+                                        imeAction = ImeAction.Next
+                                    ),
+                                    singleLine = true,
+                                )
+                                Text(
+                                    text = uiState.currency,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    modifier = Modifier.padding(start = 4.dp) // Небольшой отступ от поля
+                                )
+                            }
+                        }
+                    )
+                    HorizontalDivider()
+                    MyPickerRow(
+                        modifier = Modifier
+                            .height(70.dp),
+                        leadingText = "Дата",
+                        trailingText = uiState.expenseDate,
+                        onClick = {
+                            showDatePickerDialog = true
+                        }
+                    )
+                    HorizontalDivider()
+                    MyPickerRow(
+                        modifier = Modifier
+                            .height(70.dp),
+                        leadingText = "Время",
+                        trailingText = uiState.expenseTime,
+                        onClick = {
+                            showTimePickerDialog = true
+                        }
+                    )
+                    HorizontalDivider()
+                    MyListItemOnlyText(
+                        modifier = Modifier
+                            .height(70.dp),
+                        content = {
+                            Text(text = "Комментарий")
+                        },
+                        trailContent = {
                             BasicTextField(
-                                value = "${uiState.amount}",
+                                value = uiState.comment,
                                 onValueChange = {
-                                    onAmountChange(it)
+                                    onCommentChange(it)
                                 },
                                 textStyle = MaterialTheme.typography.bodyLarge.copy(
                                     textAlign = TextAlign.End
                                 ),
                                 keyboardOptions = KeyboardOptions(
-                                    keyboardType = KeyboardType.Number,
                                     imeAction = ImeAction.Next
                                 ),
                                 singleLine = true,
                             )
-                            Text(
-                                text = uiState.currency,
-                                style = MaterialTheme.typography.bodyLarge,
-                                modifier = Modifier.padding(start = 4.dp) // Небольшой отступ от поля
-                            )
                         }
-                    }
-                )
-                HorizontalDivider()
-                MyPickerRow(
-                    modifier = Modifier
-                        .height(70.dp),
-                    leadingText = "Дата",
-                    trailingText = uiState.expenseDate,
-                    onClick = {
-                        showDatePickerDialog = true
-                    }
-                )
-                HorizontalDivider()
-                MyPickerRow(
-                    modifier = Modifier
-                        .height(70.dp),
-                    leadingText = "Время",
-                    trailingText = uiState.expenseTime,
-                    onClick = {
-                        showTimePickerDialog = true
-                    }
-                )
-                HorizontalDivider()
-                MyListItemOnlyText(
-                    modifier = Modifier
-                        .height(70.dp),
-                    content = {
-                        Text(text = "Комментарий")
-                    },
-                    trailContent = {
-                        BasicTextField(
-                            value = uiState.comment,
-                            onValueChange = {
-                                onCommentChange(it)
-                            },
-                            textStyle = MaterialTheme.typography.bodyLarge.copy(
-                                textAlign = TextAlign.End
-                            ),
-                            keyboardOptions = KeyboardOptions(
-                                imeAction = ImeAction.Next
-                            ),
-                            singleLine = true,
-                        )
-                    }
-                )
-                HorizontalDivider()
-                Spacer(modifier = Modifier.height(32.dp))
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    onClick = {
-                        onDeleteTransactionClick()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.error
                     )
-                ) {
-                    Text(text = "Удалить расход")
-                }
-                CategoryPickerDialog(
-                    categoriesList = uiState.categories,
-                    showDialog = showCategoryPickerDialog,
-                    onDismiss = {
-                        showDatePickerDialog = false
-                    },
-                    onConfirm = { selectedCategory ->
-                        onCategoryChange(selectedCategory)
-                        showCategoryPickerDialog = false
-                    }
-                )
-                DatePickerDialogComponent(
-                    showDialog = showDatePickerDialog,
-                    datePickerState = datePickerState,
-                    onConfirm = {
-                        val selectedDateInMillis = datePickerState.selectedDateMillis
-                        selectedDateInMillis?.let {
-                            onDateChange(it)
-                        }
-                        showDatePickerDialog = false
-                    },
-                    onDismiss = {
-                        showDatePickerDialog = false
-                    }
-                )
-                TimePickerDialogComponent(
-                    showDialog = showTimePickerDialog,
-                    timePickerState = timePickerState,
-                    onDismiss = {
-                        showTimePickerDialog = false
-                    },
-                    onConfirm = {
-                        onTimeChange(
-                            timePickerState.hour,
-                            timePickerState.minute
+                    HorizontalDivider()
+                    Spacer(modifier = Modifier.height(32.dp))
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        onClick = {
+                            onDeleteTransactionClick()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error
                         )
-                        showTimePickerDialog = false
-                    },
-                )
+                    ) {
+                        Text(text = "Удалить расход")
+                    }
+                    CategoryPickerDialog(
+                        categoriesList = uiState.categories,
+                        showDialog = showCategoryPickerDialog,
+                        onDismiss = {
+                            showDatePickerDialog = false
+                        },
+                        onConfirm = { selectedCategory ->
+                            onCategoryChange(selectedCategory)
+                            showCategoryPickerDialog = false
+                        }
+                    )
+                    DatePickerDialogComponent(
+                        showDialog = showDatePickerDialog,
+                        datePickerState = datePickerState,
+                        onConfirm = {
+                            val selectedDateInMillis = datePickerState.selectedDateMillis
+                            selectedDateInMillis?.let {
+                                onDateChange(it)
+                            }
+                            showDatePickerDialog = false
+                        },
+                        onDismiss = {
+                            showDatePickerDialog = false
+                        }
+                    )
+                    TimePickerDialogComponent(
+                        showDialog = showTimePickerDialog,
+                        timePickerState = timePickerState,
+                        onDismiss = {
+                            showTimePickerDialog = false
+                        },
+                        onConfirm = {
+                            onTimeChange(
+                                timePickerState.hour,
+                                timePickerState.minute
+                            )
+                            showTimePickerDialog = false
+                        },
+                    )
+                }
             }
         }
     }

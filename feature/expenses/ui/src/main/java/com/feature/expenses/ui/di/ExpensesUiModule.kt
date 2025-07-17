@@ -5,8 +5,8 @@ import com.feature.expenses.data.di.ExpensesDataModule
 import com.feature.expenses.domain.di.ExpensesDomainModule
 import com.feature.expenses.ui.navigation.ExpensesNavigation
 import com.feature.expenses.ui.navigation.ExpensesNavigationImpl
-import com.feature.expenses.ui.screens.expenses_add.AddExpenseScreenViewModel
-import com.feature.expenses.ui.screens.expenses_add.AddExpenseViewModelFactory
+import com.feature.expenses.ui.screens.expenses_add.ExpensesAddScreenViewModel
+import com.feature.expenses.ui.screens.expenses_add.ExpensesAddScreenViewModelFactory
 import com.feature.expenses.ui.screens.expenses_edit.EditExpenseScreenViewModel
 import com.feature.expenses.ui.screens.expenses_edit.EditExpenseViewModelFactory
 import com.feature.expenses.ui.screens.expenses_history.ExpensesHistoryViewModel
@@ -31,13 +31,13 @@ object ExpensesUiModule {
     fun provideExpensesNavigation(
         expensesTodayViewModelFactory: ExpensesTodayViewModelFactory,
         expensesHistoryViewModelFactory: ExpensesHistoryViewModelFactory,
-        addExpenseViewModelFactory: AddExpenseViewModelFactory,
+        expensesAddScreenViewModelFactory: ExpensesAddScreenViewModelFactory,
         editExpenseViewModelFactory: EditExpenseViewModelFactory
         ): ExpensesNavigation {
         return ExpensesNavigationImpl(
             expensesTodayViewModelFactory = expensesTodayViewModelFactory,
             expensesHistoryViewModelFactory = expensesHistoryViewModelFactory,
-            addExpenseViewModelFactory = addExpenseViewModelFactory,
+            expensesAddScreenViewModelFactory = expensesAddScreenViewModelFactory,
             editExpenseViewModelFactory = editExpenseViewModelFactory
         )
     }
@@ -61,9 +61,9 @@ object ExpensesUiModule {
     @Provides
     @Singleton
     fun provideAddExpenseViewModelFactory(
-        viewModelProvider: Provider<AddExpenseScreenViewModel>
-    ) : AddExpenseViewModelFactory {
-        return AddExpenseViewModelFactory(viewModelProvider)
+        viewModelProvider: Provider<ExpensesAddScreenViewModel>
+    ) : ExpensesAddScreenViewModelFactory {
+        return ExpensesAddScreenViewModelFactory(viewModelProvider)
     }
 
     @Provides

@@ -27,7 +27,7 @@ import javax.inject.Provider
  * Не вижу смысла разделять их по разным файлам.
  */
 
-class AddExpenseScreenViewModel @Inject constructor(
+class ExpensesAddScreenViewModel @Inject constructor(
     private val createTransactionUseCase: CreateTransactionUseCase,
     private val getExpenseCategoriesUseCase: GetExpenseCategoriesUseCase,
     private val getAccountUseCase: GetAccountUseCase
@@ -149,8 +149,8 @@ class AddExpenseScreenViewModel @Inject constructor(
     }
 }
 
-class AddExpenseViewModelFactory @Inject constructor(
-    private val viewModelProvider: Provider<AddExpenseScreenViewModel>
+class ExpensesAddScreenViewModelFactory @Inject constructor(
+    private val viewModelProvider: Provider<ExpensesAddScreenViewModel>
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")

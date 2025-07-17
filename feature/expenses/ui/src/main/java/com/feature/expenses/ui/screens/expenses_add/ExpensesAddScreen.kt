@@ -1,4 +1,4 @@
-package com.feature.incomes.ui.screens.incomes_add
+package com.feature.expenses.ui.screens.expenses_add
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
@@ -46,15 +46,15 @@ import com.core.ui.components.MyTopAppBar
 import com.core.ui.components.TimePickerDialogComponent
 import com.core.ui.models.CategoryPickerUiModel
 import com.core.ui.theme.GreenPrimary
-import com.feature.incomes.ui.screens.common.IncomesEditScreenUiState
+import com.feature.expenses.ui.screens.common.EditExpenseScreenUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun IncomesAddScreen(
-    viewModelFactory: IncomesAddScreenViewModelFactory,
+fun ExpensesAddScreen(
+    viewModelFactory: ExpensesAddScreenViewModelFactory,
     onNavigateBack: () -> Unit
 ) {
-    val viewModel: IncomesAddScreenViewModel = viewModel(
+    val viewModel: ExpensesAddScreenViewModel = viewModel(
         factory = viewModelFactory
     )
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -75,7 +75,7 @@ fun IncomesAddScreen(
         }
     }
 
-    AddExpenseScreenContent(
+    ExpenseAddScreenContent(
         uiState = uiState,
         onCancelClick = {
             onNavigateBack()
@@ -87,8 +87,7 @@ fun IncomesAddScreen(
             viewModel.updateDate(dateInMillis = selectedDateInMillis)
         },
         onCategoryChange = { selectedCategory ->
-            viewModel.updateCategory(
-                category = selectedCategory
+            viewModel.updateCategory(category = selectedCategory
             )
         },
         onTimeChange = { hour, minute ->
@@ -105,8 +104,8 @@ fun IncomesAddScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddExpenseScreenContent(
-    uiState: IncomesEditScreenUiState,
+private fun ExpenseAddScreenContent(
+    uiState: EditExpenseScreenUiState,
     onCancelClick: () -> Unit,
     afterSuccessCreated: () -> Unit = onCancelClick,
     onAmountChange: (String) -> Unit,
@@ -133,13 +132,13 @@ fun AddExpenseScreenContent(
 
     if (uiState.success) {
         Box(
-            modifier = Modifier
+            modifier = Modifier.Companion
                 .fillMaxSize(),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Companion.Center
         ) {
             Column(
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.Companion.CenterHorizontally
             ) {
                 Text(
                     text = "Операция прошла успешно",
@@ -157,13 +156,12 @@ fun AddExpenseScreenContent(
             }
         }
     } else {
-
         Column(
-            modifier = Modifier
+            modifier = Modifier.Companion
                 .fillMaxSize()
         ) {
             MyTopAppBar(
-                text = "Мои доходы",
+                text = "Мои расходы",
                 leadingIcon = R.drawable.cross,
                 onLeadingIconClick = {
                     onCancelClick()
@@ -189,7 +187,7 @@ fun AddExpenseScreenContent(
 
                 else -> {
                     MyListItemOnlyText(
-                        modifier = Modifier
+                        modifier = Modifier.Companion
                             .height(70.dp),
                         content = {
                             Text(
@@ -208,7 +206,7 @@ fun AddExpenseScreenContent(
                     )
                     HorizontalDivider()
                     MyPickerRow(
-                        modifier = Modifier
+                        modifier = Modifier.Companion
                             .height(70.dp),
                         leadingText = "Статья",
                         trailingText = uiState.categoryName,
@@ -224,7 +222,7 @@ fun AddExpenseScreenContent(
                     )
                     HorizontalDivider()
                     MyListItemOnlyText(
-                        modifier = Modifier
+                        modifier = Modifier.Companion
                             .height(70.dp),
                         content = {
                             Text(
@@ -233,7 +231,7 @@ fun AddExpenseScreenContent(
                         },
                         trailContent = {
                             Row(
-                                verticalAlignment = Alignment.CenterVertically
+                                verticalAlignment = Alignment.Companion.CenterVertically
                             ) {
                                 BasicTextField(
                                     value = "${uiState.amount}",
@@ -241,25 +239,25 @@ fun AddExpenseScreenContent(
                                         onAmountChange(it)
                                     },
                                     textStyle = MaterialTheme.typography.bodyLarge.copy(
-                                        textAlign = TextAlign.End
+                                        textAlign = TextAlign.Companion.End
                                     ),
                                     keyboardOptions = KeyboardOptions(
-                                        keyboardType = KeyboardType.Number,
-                                        imeAction = ImeAction.Next
+                                        keyboardType = KeyboardType.Companion.Number,
+                                        imeAction = ImeAction.Companion.Next
                                     ),
                                     singleLine = true,
                                 )
                                 Text(
                                     text = uiState.currency,
                                     style = MaterialTheme.typography.bodyLarge,
-                                    modifier = Modifier.padding(start = 4.dp) // Небольшой отступ от поля
+                                    modifier = Modifier.Companion.padding(start = 4.dp) // Небольшой отступ от поля
                                 )
                             }
                         }
                     )
                     HorizontalDivider()
                     MyPickerRow(
-                        modifier = Modifier
+                        modifier = Modifier.Companion
                             .height(70.dp),
                         leadingText = "Дата",
                         trailingText = uiState.expenseDate,
@@ -269,7 +267,7 @@ fun AddExpenseScreenContent(
                     )
                     HorizontalDivider()
                     MyPickerRow(
-                        modifier = Modifier
+                        modifier = Modifier.Companion
                             .height(70.dp),
                         leadingText = "Время",
                         trailingText = uiState.expenseTime,
@@ -279,7 +277,7 @@ fun AddExpenseScreenContent(
                     )
                     HorizontalDivider()
                     MyListItemOnlyText(
-                        modifier = Modifier
+                        modifier = Modifier.Companion
                             .height(70.dp),
                         content = {
                             Text(text = "Комментарий")
@@ -291,10 +289,10 @@ fun AddExpenseScreenContent(
                                     onCommentChange(it)
                                 },
                                 textStyle = MaterialTheme.typography.bodyLarge.copy(
-                                    textAlign = TextAlign.End
+                                    textAlign = TextAlign.Companion.End
                                 ),
                                 keyboardOptions = KeyboardOptions(
-                                    imeAction = ImeAction.Next
+                                    imeAction = ImeAction.Companion.Next
                                 ),
                                 singleLine = true,
                             )

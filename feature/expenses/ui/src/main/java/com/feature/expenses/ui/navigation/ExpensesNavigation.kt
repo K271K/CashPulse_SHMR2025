@@ -9,7 +9,7 @@ import com.core.navigation.Dest
 import com.core.navigation.Feature
 import com.core.navigation.SubGraphDest
 import com.feature.expenses.ui.screens.expenses_add.ExpensesAddScreen
-import com.feature.expenses.ui.screens.expenses_add.AddExpenseViewModelFactory
+import com.feature.expenses.ui.screens.expenses_add.ExpensesAddScreenViewModelFactory
 import com.feature.expenses.ui.screens.expenses_edit.ExpensesEditScreen
 import com.feature.expenses.ui.screens.expenses_edit.EditExpenseViewModelFactory
 import com.feature.expenses.ui.screens.expenses_history.ExpensesHistoryScreen
@@ -36,7 +36,7 @@ interface ExpensesNavigation : Feature
 internal class ExpensesNavigationImpl @Inject constructor(
     private val expensesTodayViewModelFactory: ExpensesTodayViewModelFactory,
     private val expensesHistoryViewModelFactory: ExpensesHistoryViewModelFactory,
-    private val addExpenseViewModelFactory: AddExpenseViewModelFactory,
+    private val expensesAddScreenViewModelFactory: ExpensesAddScreenViewModelFactory,
     private val editExpenseViewModelFactory: EditExpenseViewModelFactory
 ) : ExpensesNavigation {
     override fun registerGraph(
@@ -115,7 +115,7 @@ internal class ExpensesNavigationImpl @Inject constructor(
             }
             composable<Dest.ExpensesAdd> {
                 ExpensesAddScreen(
-                    viewModelFactory = addExpenseViewModelFactory,
+                    viewModelFactory = expensesAddScreenViewModelFactory,
                     onNavigateBack = {
                         navHostController.navigate(Dest.ExpensesToday) {
                             popUpTo(Dest.ExpensesAdd) {

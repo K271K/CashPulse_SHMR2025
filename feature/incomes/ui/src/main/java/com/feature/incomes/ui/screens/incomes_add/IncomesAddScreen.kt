@@ -1,4 +1,4 @@
-package com.feature.incomes.ui.screens.incomes_edit
+package com.feature.incomes.ui.screens.incomes_add
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
@@ -6,14 +6,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -24,7 +21,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,21 +50,14 @@ import com.feature.incomes.ui.screens.common.IncomesEditScreenUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun IncomesEditScreen(
-    incomeId: Int,
-    viewModelFactory: IncomesEditScreenViewModelFactory,
-    onNavigateBack: () -> Unit,
+fun IncomesAddScreen(
+    viewModelFactory: IncomesAddScreenViewModelFactory,
+    onNavigateBack: () -> Unit
 ) {
-    val viewModel: IncomesEditScreenViewModel = viewModel(
+    val viewModel: IncomesAddScreenViewModel = viewModel(
         factory = viewModelFactory
     )
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    LaunchedEffect(incomeId) {
-        viewModel.initWithId(
-            incomeId = incomeId
-        )
-    }
 
     BackHandler {
         onNavigateBack()
@@ -76,10 +65,9 @@ fun IncomesEditScreen(
 
     val context = LocalContext.current
 
-    val onUpdateTransactionClick = remember {
+    val onCreateTransactionClick = remember {
         {
-            viewModel.validateAndUpdateTransaction(
-                expenseId = incomeId,
+            viewModel.validateAndCreateTransaction(
                 onValidationError = { errorMessage ->
                     Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                 }
@@ -87,15 +75,7 @@ fun IncomesEditScreen(
         }
     }
 
-    val onDeleteTransactionClick = remember {
-        {
-            viewModel.deleteTransaction(
-                expenseId = incomeId,
-            )
-        }
-    }
-
-    IncomesEditScreenContent(
+    IncomesAddScreenContent(
         uiState = uiState,
         onCancelClick = {
             onNavigateBack()
@@ -117,29 +97,26 @@ fun IncomesEditScreen(
         onCommentChange = {
             viewModel.updateComment(comment = it)
         },
-        onUpdateTransactionClick = {
-            onUpdateTransactionClick()
-        },
-        onDeleteTransactionClick = {
-            onDeleteTransactionClick()
+        onCreateTransactionClick = {
+            onCreateTransactionClick()
         }
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun IncomesEditScreenContent(
+private fun IncomesAddScreenContent(
     uiState: IncomesEditScreenUiState,
     onCancelClick: () -> Unit,
-    afterSuccessUpdated: () -> Unit = onCancelClick,
+    afterSuccessCreated: () -> Unit = onCancelClick,
     onAmountChange: (String) -> Unit,
     onDateChange: (Long) -> Unit,
     onCategoryChange: (CategoryPickerUiModel) -> Unit,
     onTimeChange: (Int, Int) -> Unit,
     onCommentChange: (String) -> Unit,
-    onUpdateTransactionClick: () -> Unit,
-    onDeleteTransactionClick: () -> Unit
+    onCreateTransactionClick: () -> Unit,
 ) {
+
     var showDatePickerDialog by remember {
         mutableStateOf(false)
     }
@@ -153,22 +130,23 @@ private fun IncomesEditScreenContent(
     var showCategoryPickerDialog by remember {
         mutableStateOf(false)
     }
+
     if (uiState.success) {
         Box(
-            modifier = Modifier
+            modifier = Modifier.Companion
                 .fillMaxSize(),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Companion.Center
         ) {
             Column(
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.Companion.CenterHorizontally
             ) {
                 Text(
                     text = "Операция прошла успешно",
                 )
                 TextButton(
                     onClick = {
-                        afterSuccessUpdated()
+                        afterSuccessCreated()
                     },
                     colors = ButtonDefaults.textButtonColors(
                         contentColor = GreenPrimary
@@ -179,8 +157,9 @@ private fun IncomesEditScreenContent(
             }
         }
     } else {
+
         Column(
-            modifier = Modifier
+            modifier = Modifier.Companion
                 .fillMaxSize()
         ) {
             MyTopAppBar(
@@ -191,7 +170,7 @@ private fun IncomesEditScreenContent(
                 },
                 trailingIcon = R.drawable.check,
                 onTrailingIconClick = {
-                    onUpdateTransactionClick()
+                    onCreateTransactionClick()
                 }
             )
             when {
@@ -203,14 +182,14 @@ private fun IncomesEditScreenContent(
                     MyErrorBox(
                         message = uiState.error,
                         onRetryClick = {
-                            onUpdateTransactionClick()
+
                         }
                     )
                 }
 
                 else -> {
                     MyListItemOnlyText(
-                        modifier = Modifier
+                        modifier = Modifier.Companion
                             .height(70.dp),
                         content = {
                             Text(
@@ -229,7 +208,7 @@ private fun IncomesEditScreenContent(
                     )
                     HorizontalDivider()
                     MyPickerRow(
-                        modifier = Modifier
+                        modifier = Modifier.Companion
                             .height(70.dp),
                         leadingText = "Статья",
                         trailingText = uiState.categoryName,
@@ -245,7 +224,7 @@ private fun IncomesEditScreenContent(
                     )
                     HorizontalDivider()
                     MyListItemOnlyText(
-                        modifier = Modifier
+                        modifier = Modifier.Companion
                             .height(70.dp),
                         content = {
                             Text(
@@ -254,7 +233,7 @@ private fun IncomesEditScreenContent(
                         },
                         trailContent = {
                             Row(
-                                verticalAlignment = Alignment.CenterVertically
+                                verticalAlignment = Alignment.Companion.CenterVertically
                             ) {
                                 BasicTextField(
                                     value = "${uiState.amount}",
@@ -262,25 +241,25 @@ private fun IncomesEditScreenContent(
                                         onAmountChange(it)
                                     },
                                     textStyle = MaterialTheme.typography.bodyLarge.copy(
-                                        textAlign = TextAlign.End
+                                        textAlign = TextAlign.Companion.End
                                     ),
                                     keyboardOptions = KeyboardOptions(
-                                        keyboardType = KeyboardType.Number,
-                                        imeAction = ImeAction.Next
+                                        keyboardType = KeyboardType.Companion.Number,
+                                        imeAction = ImeAction.Companion.Next
                                     ),
                                     singleLine = true,
                                 )
                                 Text(
                                     text = uiState.currency,
                                     style = MaterialTheme.typography.bodyLarge,
-                                    modifier = Modifier.padding(start = 4.dp) // Небольшой отступ от поля
+                                    modifier = Modifier.Companion.padding(start = 4.dp) // Небольшой отступ от поля
                                 )
                             }
                         }
                     )
                     HorizontalDivider()
                     MyPickerRow(
-                        modifier = Modifier
+                        modifier = Modifier.Companion
                             .height(70.dp),
                         leadingText = "Дата",
                         trailingText = uiState.expenseDate,
@@ -290,7 +269,7 @@ private fun IncomesEditScreenContent(
                     )
                     HorizontalDivider()
                     MyPickerRow(
-                        modifier = Modifier
+                        modifier = Modifier.Companion
                             .height(70.dp),
                         leadingText = "Время",
                         trailingText = uiState.expenseTime,
@@ -300,7 +279,7 @@ private fun IncomesEditScreenContent(
                     )
                     HorizontalDivider()
                     MyListItemOnlyText(
-                        modifier = Modifier
+                        modifier = Modifier.Companion
                             .height(70.dp),
                         content = {
                             Text(text = "Комментарий")
@@ -312,30 +291,16 @@ private fun IncomesEditScreenContent(
                                     onCommentChange(it)
                                 },
                                 textStyle = MaterialTheme.typography.bodyLarge.copy(
-                                    textAlign = TextAlign.End
+                                    textAlign = TextAlign.Companion.End
                                 ),
                                 keyboardOptions = KeyboardOptions(
-                                    imeAction = ImeAction.Next
+                                    imeAction = ImeAction.Companion.Next
                                 ),
                                 singleLine = true,
                             )
                         }
                     )
                     HorizontalDivider()
-                    Spacer(modifier = Modifier.height(32.dp))
-                    Button(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        onClick = {
-                            onDeleteTransactionClick()
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.error
-                        )
-                    ) {
-                        Text(text = "Удалить доход")
-                    }
                     CategoryPickerDialog(
                         categoriesList = uiState.categories,
                         showDialog = showCategoryPickerDialog,
